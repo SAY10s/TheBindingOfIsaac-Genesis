@@ -9,6 +9,8 @@ app.use("/client", express.static(__dirname + "/client"));
 serv.listen(2000);
 console.log("Server started.");
 
+const DEBUG = true;
+
 const SOCKET_LIST = {};
 
 const Entity = () => {
@@ -150,6 +152,17 @@ io.sockets.on("connection", (socket) => {
   socket.on("disconnect", () => {
     delete SOCKET_LIST[socket.id];
     Player.onDisconnect(socket);
+  });
+  socket.on("sendMsgToServer", (data) => {
+    let playerName = ("" + socket.id).slice(2, 7);
+    for (let i in SOCKET_LIST) {
+      SOCKET_LIST[i].emit("addToChat", playerName + ": " + data);
+    }
+  });
+  socket.on("evalServer", (data) => {
+    if (!DEBUG) return;
+    let res = eval(data);
+    socket.emit("evalAnswer", res);
   });
 });
 

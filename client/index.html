@@ -5,8 +5,20 @@
   style="border: 1px solid black"
 ></canvas>
 
+<div id="chat-text" style="width: 500px; height: 100px; overflow-y: scroll">
+  <div>Type something!</div>
+</div>
+
+<form id="chat-form">
+  <input type="text" id="chat-input" style="width: 500px" />
+</form>
+
 <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
 <script>
+  const chatText = document.getElementById("chat-text");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+
   const ctx = document.getElementById("ctx").getContext("2d");
   const socket = io();
   ctx.fillStyle = "red";
@@ -21,6 +33,25 @@
       ctx.fillRect(data.bullet[i].x - 2.5, data.bullet[i].y - 2.5, 5, 5);
     }
   });
+
+  socket.on("addToChat", (data) => {
+    chatText.innerHTML += `<div>${data}</div>`;
+    chatText.scrollTop = chatText.scrollHeight;
+  });
+
+  socket.on("evalAnswer", (data) => {
+    console.log(data);
+  });
+
+  chatForm.onsubmit = (event) => {
+    event.preventDefault();
+    if (chatInput.value[0] === "/") {
+      socket.emit("evalServer", chatInput.value.slice(1));
+    } else {
+      socket.emit("sendMsgToServer", chatInput.value);
+    }
+    chatInput.value = "";
+  };
 
   document.onkeydown = (event) => {
     if (event.keyCode === 68)
