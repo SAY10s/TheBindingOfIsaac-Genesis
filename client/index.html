@@ -1,6 +1,21 @@
-Hello, world!
+<canvas
+  id="ctx"
+  width="500"
+  height="500"
+  style="border: 1px solid black"
+></canvas>
+
 <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
 <script>
+  const ctx = document.getElementById("ctx").getContext("2d");
   const socket = io();
-  socket.emit("heyyo");
+  ctx.fillStyle = "red";
+  ctx.font = "30px Arial";
+
+  socket.on("newPositions", (data) => {
+    ctx.clearRect(0, 0, 500, 500);
+    for (let i = 0; i < data.length; i++) {
+      ctx.fillText(data[i].number, data[i].x, data[i].y);
+    }
+  });
 </script>
