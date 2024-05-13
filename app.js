@@ -101,6 +101,45 @@ Player.update = () => {
   return pack;
 };
 
+const Bullet = (angle) => {
+  const self = Entity();
+  self.id = Math.random();
+  self.spdX = Math.cos((angle / 180) * Math.PI) * 10;
+  self.spdY = Math.sin((angle / 180) * Math.PI) * 10;
+  self.timer = 0;
+  self.toRemove = false;
+  const super_update = self.update;
+  self.update = () => {
+    if (self.timer++ > 100) {
+      self.toRemove = true;
+    }
+    super_update();
+  };
+  Bullet.list[self.id] = self;
+  return self;
+};
+Bullet.list = {};
+
+Bullet.update = () => {
+  if (Math.random() < 0.1) {
+    Bullet(Math.random() * 360);
+  }
+
+  const pack = [];
+  for (let i in Bullet.list) {
+    let bullet = Bullet.list[i];
+    bullet.update();
+    if (bullet.toRemove) {
+      delete Bullet.list[i];
+    }
+    pack.push({
+      x: bullet.x,
+      y: bullet.y,
+    });
+  }
+  return pack;
+};
+
 const io = require("socket.io")(serv, {});
 io.sockets.on("connection", (socket) => {
   socket.id = Math.random();
@@ -115,7 +154,10 @@ io.sockets.on("connection", (socket) => {
 });
 
 setInterval(() => {
-  const pack = Player.update();
+  const pack = {
+    player: Player.update(),
+    bullet: Bullet.update(),
+  };
   for (let i in SOCKET_LIST) {
     let socket = SOCKET_LIST[i];
     socket.emit("newPositions", pack);
