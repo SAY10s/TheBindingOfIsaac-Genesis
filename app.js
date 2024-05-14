@@ -172,13 +172,23 @@ const USERS = {
   say10s: "say10s",
 };
 const isValidPassword = (data) => {
-  return USERS[data.username] === data.password;
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(USERS[data.username] === data.password);
+    }, 10);
+  });
 };
 const isUsernameTaken = (data) => {
-  return USERS[data.username];
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(USERS[data.username]);
+    }, 10);
+  });
 };
 const addUser = (data) => {
-  USERS[data.username] = data.password;
+  setTimeout(() => {
+    USERS[data.username] = data.password;
+  }, 10);
 };
 
 const io = require("socket.io")(serv, {});
@@ -186,13 +196,14 @@ io.sockets.on("connection", (socket) => {
   socket.id = Math.random();
   SOCKET_LIST[socket.id] = socket;
 
-  socket.on("signIn", (data) => {
+  socket.on("signIn", async (data) => {
     Player.onConnect(socket);
-    if (isValidPassword(data)) socket.emit("signInResponse", { success: true });
+    if (await isValidPassword(data))
+      socket.emit("signInResponse", { success: true });
     else socket.emit("signInResponse", { success: false });
   });
-  socket.on("signUp", (data) => {
-    if (!isUsernameTaken(data)) {
+  socket.on("signUp", async (data) => {
+    if (!(await isUsernameTaken(data))) {
       addUser(data);
       socket.emit("signUpResponse", { success: true });
     } else {
