@@ -1,3 +1,4 @@
+const e = require("express");
 const express = require("express");
 const app = express();
 const serv = require("http").Server(app);
@@ -52,6 +53,7 @@ const Player = (id) => {
   self.shootingUp = false;
   self.shootingDown = false;
   self.mouseAngle = 0;
+  self.isAttackOnCooldown = false;
   self.maxSpd = 5;
   self.hp = 10;
   self.hpMax = 10;
@@ -79,9 +81,15 @@ const Player = (id) => {
     }
   };
   self.shootBullet = (angle) => {
-    const b = Bullet(self.id, angle);
-    b.x = self.x;
-    b.y = self.y;
+    if (!self.isAttackOnCooldown) {
+      const b = Bullet(self.id, angle);
+      b.x = self.x;
+      b.y = self.y;
+      self.isAttackOnCooldown = true;
+      setTimeout(() => {
+        self.isAttackOnCooldown = false;
+      }, 500);
+    }
   };
 
   self.updateSpeed = () => {
@@ -201,7 +209,7 @@ const Bullet = (parent, angle) => {
 
     for (let i in Player.list) {
       let p = Player.list[i];
-      if (self.getDistance(p) < 32 && self.parent !== p.id) {
+      if (self.getDistance(p) < 64 && self.parent !== p.id) {
         p.hp -= 1;
         const shooter = Player.list[self.parent];
         if (p.hp <= 0) {
