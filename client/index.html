@@ -62,6 +62,13 @@
     }
   });
 
+  //TODO: remove
+  //automatic login
+  socket.emit("signIn", {
+    username: "test",
+    password: "test",
+  });
+
   //chat
   const chatText = document.getElementById("chat-text");
   const chatForm = document.getElementById("chat-form");
@@ -87,8 +94,15 @@
   };
 
   //game
+  const Img = {};
+  Img.player = new Image();
+  Img.player.src = "/client/img/isaac.png";
+  Img.bullet = new Image();
+  Img.bullet.src = "/client/img/tear.png";
+  Img.map = new Image();
+  Img.map.src = "/client/img/bg.png";
+
   const ctx = document.getElementById("ctx").getContext("2d");
-  ctx.fillStyle = "red";
   ctx.font = "30px Arial";
 
   const Player = (initPack) => {
@@ -103,10 +117,27 @@
 
     self.draw = () => {
       let hpWidth = (30 * self.hp) / self.hpMax;
-      ctx.fillRect(self.x - hpWidth / 2, self.y - 40, hpWidth, 4);
-      ctx.fillText(self.number, self.x, self.y);
+      ctx.fillStyle = "red";
+      ctx.fillRect(self.x - hpWidth / 2, self.y - 70, hpWidth, 4);
 
-      ctx.fillText(self.score, self.x, self.y - 60);
+      const width = Img.player.width / 4;
+      const height = Img.player.height / 4;
+
+      ctx.drawImage(
+        Img.player,
+        0,
+        0,
+        Img.player.width,
+        Img.player.height,
+        self.x - width / 2,
+        self.y - height / 2,
+        width,
+        height
+      );
+
+      // ctx.fillText(self.number, self.x, self.y);
+
+      // ctx.fillText(self.score, self.x, self.y - 60);
     };
 
     Player.list[self.id] = self;
@@ -121,7 +152,19 @@
     self.y = initPack.y;
 
     self.draw = () => {
-      ctx.fillRect(self.x - 2.5, self.y - 2.5, 5, 5);
+      const width = Img.bullet.width / 4;
+      const height = Img.bullet.height / 4;
+      ctx.drawImage(
+        Img.bullet,
+        0,
+        0,
+        Img.bullet.width,
+        Img.bullet.height,
+        self.x - width / 2,
+        self.y - height / 2,
+        width,
+        height
+      );
     };
 
     Bullet.list[self.id] = self;
@@ -169,6 +212,7 @@
 
   setInterval(() => {
     ctx.clearRect(0, 0, 500, 500);
+    drawMap();
     for (let i in Player.list) {
       Player.list[i].draw();
     }
@@ -176,6 +220,9 @@
       Bullet.list[i].draw();
     }
   }, 40);
+  const drawMap = () => {
+    ctx.drawImage(Img.map, 0, 0, 500, 500);
+  };
 
   document.onkeydown = (event) => {
     if (event.keyCode === 68)
