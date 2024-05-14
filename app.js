@@ -24,8 +24,13 @@ const Entity = () => {
     self.updatePosition();
   };
   self.updatePosition = () => {
-    self.x += self.spdX;
-    self.y += self.spdY;
+    const speed = Math.sqrt(self.spdX * self.spdX + self.spdY * self.spdY);
+    if (speed !== 0) {
+      const normalizedX = self.spdX / speed;
+      const normalizedY = self.spdY / speed;
+      self.x += normalizedX * 5;
+      self.y += normalizedY * 5;
+    }
   };
   self.getDistance = (pt) => {
     return Math.sqrt(Math.pow(self.x - pt.x, 2) + Math.pow(self.y - pt.y, 2));
