@@ -147,7 +147,10 @@ const Bullet = (initPack) => {
 };
 Bullet.list = {};
 
+let selfId = null;
+
 socket.on("init", (data) => {
+  if (data.selfId) selfId = data.selfId;
   for (let i = 0; i < data.player.length; i++) {
     Player(data.player[i]);
   }
@@ -186,8 +189,10 @@ socket.on("remove", (data) => {
 });
 
 setInterval(() => {
+  if (!selfId) return;
   ctx.clearRect(0, 0, 500, 500);
   drawMap();
+  drawScore();
   for (let i in Player.list) {
     Player.list[i].draw();
   }
@@ -197,6 +202,10 @@ setInterval(() => {
 }, 40);
 const drawMap = () => {
   ctx.drawImage(Img.map, 0, 0, 500, 500);
+};
+const drawScore = () => {
+  ctx.fillStyle = "white";
+  ctx.fillText(Player.list[selfId].score, 0, 30);
 };
 
 document.onkeydown = (event) => {
