@@ -1,26 +1,73 @@
-<canvas
-  id="ctx"
-  width="500"
-  height="500"
-  style="border: 1px solid black"
-></canvas>
-
-<div id="chat-text" style="width: 500px; height: 100px; overflow-y: scroll">
-  <div>Type something!</div>
+<div class="signDiv">
+  <input type="text" id="signDiv-username" placeholder="Username" /><br />
+  <input type="text" id="signDiv-password" placeholder="Password" /><br />
+  <button id="signDiv-signIn">Sign in</button>
+  <button id="signDiv-signUp">Sign up</button>
 </div>
+<div id="gameDiv" style="display: none">
+  <canvas
+    id="ctx"
+    width="500"
+    height="500"
+    style="border: 1px solid black"
+  ></canvas>
 
-<form id="chat-form">
-  <input type="text" id="chat-input" style="width: 500px" />
-</form>
+  <div id="chat-text" style="width: 500px; height: 100px; overflow-y: scroll">
+    <div>Type something!</div>
+  </div>
+
+  <form id="chat-form">
+    <input type="text" id="chat-input" style="width: 500px" />
+  </form>
+</div>
 
 <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
 <script>
+  const socket = io();
+
+  //sign
+  const signDiv = document.querySelector(".signDiv");
+  const signDivUsername = document.getElementById("signDiv-username");
+  const signDivPassword = document.getElementById("signDiv-password");
+  const signIn = document.getElementById("signDiv-signIn");
+  const signUp = document.getElementById("signDiv-signUp");
+  const gameDiv = document.getElementById("gameDiv");
+
+  signIn.onclick = () => {
+    socket.emit("signIn", {
+      username: signDivUsername.value,
+      password: signDivPassword.value,
+    });
+  };
+  signUp.onclick = () => {
+    socket.emit("signUp", {
+      username: signDivUsername.value,
+      password: signDivPassword.value,
+    });
+  };
+  socket.on("signInResponse", (data) => {
+    if (data.success) {
+      signDiv.style.display = "none";
+      gameDiv.style.display = "inline-block";
+    } else {
+      signDivUsername.value = "";
+      signDivPassword.value = "";
+    }
+  });
+  socket.on("signUpResponse", (data) => {
+    if (data.success) {
+      alert("Sign up successful.");
+    } else {
+      alert("Sign up unsuccessful.");
+    }
+  });
+
+  //game
   const chatText = document.getElementById("chat-text");
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
   const ctx = document.getElementById("ctx").getContext("2d");
-  const socket = io();
   ctx.fillStyle = "red";
   ctx.font = "30px Arial";
 

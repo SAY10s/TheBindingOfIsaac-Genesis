@@ -165,13 +165,40 @@ Bullet.update = () => {
   return pack;
 };
 
+const USERS = {
+  // username:password
+  admin: "admin",
+  test: "test",
+  say10s: "say10s",
+};
+const isValidPassword = (data) => {
+  return USERS[data.username] === data.password;
+};
+const isUsernameTaken = (data) => {
+  return USERS[data.username];
+};
+const addUser = (data) => {
+  USERS[data.username] = data.password;
+};
+
 const io = require("socket.io")(serv, {});
 io.sockets.on("connection", (socket) => {
   socket.id = Math.random();
   SOCKET_LIST[socket.id] = socket;
 
-  Player.onConnect(socket);
-
+  socket.on("signIn", (data) => {
+    Player.onConnect(socket);
+    if (isValidPassword(data)) socket.emit("signInResponse", { success: true });
+    else socket.emit("signInResponse", { success: false });
+  });
+  socket.on("signUp", (data) => {
+    if (!isUsernameTaken(data)) {
+      addUser(data);
+      socket.emit("signUpResponse", { success: true });
+    } else {
+      socket.emit("signUpResponse", { success: false });
+    }
+  });
   socket.on("disconnect", () => {
     delete SOCKET_LIST[socket.id];
     Player.onDisconnect(socket);
