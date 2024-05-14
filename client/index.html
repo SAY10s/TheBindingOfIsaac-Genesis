@@ -62,24 +62,10 @@
     }
   });
 
-  //game
+  //chat
   const chatText = document.getElementById("chat-text");
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
-
-  const ctx = document.getElementById("ctx").getContext("2d");
-  ctx.fillStyle = "red";
-  ctx.font = "30px Arial";
-
-  socket.on("newPositions", (data) => {
-    ctx.clearRect(0, 0, 500, 500);
-    for (let i = 0; i < data.player.length; i++) {
-      ctx.fillText(data.player[i].number, data.player[i].x, data.player[i].y);
-    }
-    for (let i = 0; i < data.bullet.length; i++) {
-      ctx.fillRect(data.bullet[i].x - 2.5, data.bullet[i].y - 2.5, 5, 5);
-    }
-  });
 
   socket.on("addToChat", (data) => {
     chatText.innerHTML += `<div>${data}</div>`;
@@ -99,6 +85,91 @@
     }
     chatInput.value = "";
   };
+
+  //game
+  const ctx = document.getElementById("ctx").getContext("2d");
+  ctx.fillStyle = "red";
+  ctx.font = "30px Arial";
+
+  const Player = (initPack) => {
+    const self = {};
+    self.id = initPack.id;
+    self.number = initPack.number;
+    self.x = initPack.x;
+    self.y = initPack.y;
+    self.hp = initPack.hp;
+    self.hpMax = initPack.hpMax;
+    self.score = initPack.score;
+
+    self.draw = () => {
+      ctx.fillText(self.number, self.x, self.y);
+    };
+
+    Player.list[self.id] = self;
+    return self;
+  };
+  Player.list = {};
+
+  const Bullet = (initPack) => {
+    const self = {};
+    self.id = initPack.id;
+    self.x = initPack.x;
+    self.y = initPack.y;
+
+    self.draw = () => {
+      ctx.fillRect(self.x - 2.5, self.y - 2.5, 5, 5);
+    };
+
+    Bullet.list[self.id] = self;
+    return self;
+  };
+  Bullet.list = {};
+
+  socket.on("init", (data) => {
+    for (let i = 0; i < data.player.length; i++) {
+      Player(data.player[i]);
+    }
+    for (let i = 0; i < data.bullet.length; i++) {
+      Bullet(data.bullet[i]);
+    }
+  });
+
+  socket.on("update", (data) => {
+    for (let i = 0; i < data.player.length; i++) {
+      const pack = data.player[i];
+      const p = Player.list[pack.id];
+      if (p) {
+        if (pack.x !== undefined) p.x = pack.x;
+        if (pack.y !== undefined) p.y = pack.y;
+      }
+    }
+    for (let i = 0; i < data.bullet.length; i++) {
+      const pack = data.bullet[i];
+      const b = Bullet.list[data.bullet[i].id];
+      if (b) {
+        if (pack.x !== undefined) b.x = pack.x;
+        if (pack.y !== undefined) b.y = pack.y;
+      }
+    }
+  });
+  socket.on("remove", (data) => {
+    for (let i = 0; i < data.player.length; i++) {
+      delete Player.list[data.player[i]];
+    }
+    for (let i = 0; i < data.bullet.length; i++) {
+      delete Bullet.list[data.bullet[i]];
+    }
+  });
+
+  setInterval(() => {
+    ctx.clearRect(0, 0, 500, 500);
+    for (let i in Player.list) {
+      ctx.fillText(Player.list[i].number, Player.list[i].x, Player.list[i].y);
+    }
+    for (let i in Bullet.list) {
+      ctx.fillRect(Bullet.list[i].x - 2.5, Bullet.list[i].y - 2.5, 5, 5);
+    }
+  }, 40);
 
   document.onkeydown = (event) => {
     if (event.keyCode === 68)

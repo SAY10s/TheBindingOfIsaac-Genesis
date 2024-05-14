@@ -79,6 +79,12 @@ const Player = (id) => {
     }
   };
   Player.list[id] = self;
+  initPack.player.push({
+    id: self.id,
+    x: self.x,
+    y: self.y,
+    number: self.number,
+  });
   return self;
 };
 Player.list = {};
@@ -87,6 +93,7 @@ Player.onConnect = (socket) => {
   //   console.log("Player connected! " + socket.id);
 
   const player = Player(socket.id);
+
   socket.on("keyPress", (data) => {
     // console.log("keyPress", data.inputId, data.state);
     if (data.inputId === "left") {
@@ -106,6 +113,7 @@ Player.onConnect = (socket) => {
 };
 Player.onDisconnect = (socket) => {
   delete Player.list[socket.id];
+  removePack.player.push(socket.id);
 };
 Player.update = () => {
   const pack = [];
@@ -113,9 +121,9 @@ Player.update = () => {
     let player = Player.list[i];
     player.update();
     pack.push({
+      id: player.id,
       x: player.x,
       y: player.y,
-      number: player.number,
     });
   }
   return pack;
@@ -145,6 +153,11 @@ const Bullet = (parent, angle) => {
     }
   };
   Bullet.list[self.id] = self;
+  initPack.bullet.push({
+    id: self.id,
+    x: self.x,
+    y: self.y,
+  });
   return self;
 };
 Bullet.list = {};
@@ -156,8 +169,10 @@ Bullet.update = () => {
     bullet.update();
     if (bullet.toRemove) {
       delete Bullet.list[i];
+      removePack.bullet.push(bullet.id);
     } else
       pack.push({
+        id: bullet.id,
         x: bullet.x,
         y: bullet.y,
       });
@@ -165,23 +180,10 @@ Bullet.update = () => {
   return pack;
 };
 // ------------------------------ USER AUTHENTICATION ------------------------------
-const { Client } = require("pg");
-
-const client = new Client({
-  host: "db",
-  port: 5432,
-  user: "postgres",
-  password: "moje_haslo",
-  database: "postgres",
-});
-
-client.connect((err) => {
-  if (err) {
-    console.error("Connection error", err.stack);
-  } else {
-    console.log("Connected");
-  }
-});
+// -
+// -
+// -
+// ------------------------------ DEBUG CODE ------------------------------
 
 const USERS = {
   // username:password
@@ -189,55 +191,105 @@ const USERS = {
   test: "test",
   say10s: "say10s",
 };
-
-const getUsers = async () => {
-  try {
-    const res = await client.query("SELECT * FROM users");
-    return res.rows;
-  } catch (err) {
-    console.error(err);
-  }
+const isValidPassword = (data) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(USERS[data.username] === data.password);
+    }, 10);
+  });
+};
+const isUsernameTaken = (data) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(USERS[data.username]);
+    }, 10);
+  });
+};
+const addUser = (data) => {
+  setTimeout(() => {
+    USERS[data.username] = data.password;
+  }, 10);
 };
 
-// TEMP TEST
-getUsers()
-  .then((users) => console.log(users))
-  .catch((err) => console.error(err));
+// ------------------------------ END OF DEBUG CODE------------------------------
+// -
+// -
+// -
+// ------------------------------ PROD CODE BELOW ------------------------------
 
-const isValidPassword = async (data) => {
-  try {
-    const res = await client.query(
-      "SELECT password FROM users WHERE username = $1",
-      [data.username]
-    );
-    return res.rows.length > 0 && res.rows[0].password === data.password;
-  } catch (err) {
-    console.error(err);
-  }
-};
+// const { Client } = require("pg");
 
-const isUsernameTaken = async (data) => {
-  try {
-    const res = await client.query(
-      "SELECT username FROM users WHERE username = $1",
-      [data.username]
-    );
-    return res.rows.length > 0;
-  } catch (err) {
-    console.error(err);
-  }
-};
+// const client = new Client({
+//   host: "db",
+//   port: 5432,
+//   user: "postgres",
+//   password: "moje_haslo",
+//   database: "postgres",
+// });
 
-const addUser = async (data) => {
-  try {
-    await client.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2)",
-      [data.username, data.password]
-    );
-  } catch (err) {
-    console.error(err);
-  }
-};
+// client.connect((err) => {
+//   if (err) {
+//     console.error("Connection error", err.stack);
+//   } else {
+//     console.log("Connected");
+//   }
+// });
+
+// const USERS = {
+//   // username:password
+//   admin: "admin",
+//   test: "test",
+//   say10s: "say10s",
+// };
+
+// const getUsers = async () => {
+//   try {
+//     const res = await client.query("SELECT * FROM users");
+//     return res.rows;
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+// getUsers()
+//   .then((users) => console.log("Users:" + users))
+//   .catch((err) => console.error(err));
+
+// const isValidPassword = async (data) => {
+//   try {
+//     const res = await client.query(
+//       "SELECT password FROM users WHERE username = $1",
+//       [data.username]
+//     );
+//     return res.rows.length > 0 && res.rows[0].password === data.password;
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+// const isUsernameTaken = async (data) => {
+//   try {
+//     const res = await client.query(
+//       "SELECT username FROM users WHERE username = $1",
+//       [data.username]
+//     );
+//     return res.rows.length > 0;
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+// const addUser = async (data) => {
+//   try {
+//     await client.query(
+//       "INSERT INTO users (username, password) VALUES ($1, $2)",
+//       [data.username, data.password]
+//     );
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+// ------------------------------ END OF PROD ------------------------------
 
 const io = require("socket.io")(serv, {});
 io.sockets.on("connection", (socket) => {
@@ -275,6 +327,9 @@ io.sockets.on("connection", (socket) => {
   });
 });
 
+const initPack = { player: [], bullet: [] };
+const removePack = { player: [], bullet: [] };
+
 setInterval(() => {
   const pack = {
     player: Player.update(),
@@ -282,6 +337,12 @@ setInterval(() => {
   };
   for (let i in SOCKET_LIST) {
     let socket = SOCKET_LIST[i];
-    socket.emit("newPositions", pack);
+    socket.emit("init", initPack);
+    socket.emit("update", pack);
+    socket.emit("remove", removePack);
   }
+  initPack.player = [];
+  initPack.bullet = [];
+  removePack.player = [];
+  removePack.bullet = [];
 }, 1000 / 25);
