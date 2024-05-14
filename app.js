@@ -43,7 +43,7 @@ const Player = (id) => {
   self.pressingDown = false;
   self.pressingAttack = false;
   self.mouseAngle = 0;
-  self.maxSpd = 10;
+  self.maxSpd = 5;
   self.hp = 10;
   self.hpMax = 10;
   self.score = 0;
@@ -396,4 +396,4 @@ setInterval(() => {
   initPack.bullet = [];
   removePack.player = [];
   removePack.bullet = [];
-}, 1000 / 25);
+}, 1000 / 100);

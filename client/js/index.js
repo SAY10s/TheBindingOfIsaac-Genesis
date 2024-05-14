@@ -199,9 +199,9 @@ setInterval(() => {
   for (let i in Bullet.list) {
     Bullet.list[i].draw();
   }
-}, 40);
+}, 10);
 const drawMap = () => {
-  ctx.drawImage(Img.map, 0, 0, 500, 500);
+  ctx.drawImage(Img.map, 0, 0, 1280, 720);
 };
 const drawScore = () => {
   ctx.fillStyle = "white";
