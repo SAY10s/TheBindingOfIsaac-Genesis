@@ -264,15 +264,15 @@ document.onkeyup = (event) => {
 //     socket.emit("keyPress", { inputId: "shootUp", state: false });
 // };
 
-document.onmousedown = (event) => {
-  socket.emit("keyPress", { inputId: "attack", state: true });
-};
-document.onmouseup = (event) => {
-  socket.emit("keyPress", { inputId: "attack", state: false });
-};
-document.onmousemove = (event) => {
-  const x = -250 + event.clientX - 8;
-  const y = -250 + event.clientY - 8;
-  const angle = (Math.atan2(y, x) / Math.PI) * 180;
-  socket.emit("keyPress", { inputId: "mouseAngle", state: angle });
-};
+// document.onmousedown = (event) => {
+//   socket.emit("keyPress", { inputId: "attack", state: true });
+// };
+// document.onmouseup = (event) => {
+//   socket.emit("keyPress", { inputId: "attack", state: false });
+// };
+// document.onmousemove = (event) => {
+//   const x = -250 + event.clientX - 8;
+//   const y = -250 + event.clientY - 8;
+//   const angle = (Math.atan2(y, x) / Math.PI) * 180;
+//   socket.emit("keyPress", { inputId: "mouseAngle", state: angle });
+// };
