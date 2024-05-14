@@ -208,23 +208,23 @@ const drawScore = () => {
 };
 
 document.onkeydown = (event) => {
-  if (event.keyCode === 68)
+  if (event.key === "d")
     socket.emit("keyPress", { inputId: "right", state: true });
-  else if (event.keyCode === 83)
+  else if (event.key === "s")
     socket.emit("keyPress", { inputId: "down", state: true });
-  else if (event.keyCode === 65)
+  else if (event.key === "a")
     socket.emit("keyPress", { inputId: "left", state: true });
-  else if (event.keyCode === 87)
+  else if (event.key === "w")
     socket.emit("keyPress", { inputId: "up", state: true });
 };
 document.onkeyup = (event) => {
-  if (event.keyCode === 68)
+  if (event.key === "d")
     socket.emit("keyPress", { inputId: "right", state: false });
-  else if (event.keyCode === 83)
+  else if (event.key === "s")
     socket.emit("keyPress", { inputId: "down", state: false });
-  else if (event.keyCode === 65)
+  else if (event.key === "a")
     socket.emit("keyPress", { inputId: "left", state: false });
-  else if (event.keyCode === 87)
+  else if (event.key === "w")
     socket.emit("keyPress", { inputId: "up", state: false });
 };
 
