@@ -198,6 +198,7 @@ setInterval(() => {
   for (let i in Bullet.list) {
     Bullet.list[i].draw();
   }
+  console.log(1000 / expectedFps);
 }, 10);
 const drawMap = () => {
   ctx.drawImage(Img.map, 0, 0, 1280, 720);
@@ -243,36 +244,3 @@ document.onkeyup = (event) => {
   else if (event.key === "ArrowUp")
     socket.emit("keyPress", { inputId: "shootUp", state: false });
 };
-// document.onkeydown = (event) => {
-//   if (event.key === "ArrowRight")
-//     socket.emit("keyPress", { inputId: "shootRight", state: true });
-//   else if (event.key === "ArrowDown")
-//     socket.emit("keyPress", { inputId: "shootDown", state: true });
-//   else if (event.key === "ArrowLeft")
-//     socket.emit("keyPress", { inputId: "shootLeft", state: true });
-//   else if (event.key === "ArrowUp")
-//     socket.emit("keyPress", { inputId: "shootUp", state: true });
-// };
-// document.onkeyup = (event) => {
-//   if (event.key === "ArrowRight")
-//     socket.emit("keyPress", { inputId: "shootRight", state: false });
-//   else if (event.key === "ArrowDown")
-//     socket.emit("keyPress", { inputId: "shootDown", state: false });
-//   else if (event.key === "ArrowLeft")
-//     socket.emit("keyPress", { inputId: "shootLeft", state: false });
-//   else if (event.key === "ArrowUp")
-//     socket.emit("keyPress", { inputId: "shootUp", state: false });
-// };
-
-// document.onmousedown = (event) => {
-//   socket.emit("keyPress", { inputId: "attack", state: true });
-// };
-// document.onmouseup = (event) => {
-//   socket.emit("keyPress", { inputId: "attack", state: false });
-// };
-// document.onmousemove = (event) => {
-//   const x = -250 + event.clientX - 8;
-//   const y = -250 + event.clientY - 8;
-//   const angle = (Math.atan2(y, x) / Math.PI) * 180;
-//   socket.emit("keyPress", { inputId: "mouseAngle", state: angle });
-// };

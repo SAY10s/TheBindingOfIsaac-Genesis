@@ -1,4 +1,12 @@
 const express = require("express");
+const Entity = require("./server/Entity");
+const {
+  GAME_WINDOW_WIDTH,
+  GAME_WINDOW_HEIGHT,
+  EXPECTED_FPS,
+} = require("./server/settings");
+
+// ------------------------------ SERVER ------------------------------
 const app = express();
 const serv = require("http").Server(app);
 app.get("/", (req, res) => {
@@ -9,10 +17,9 @@ serv.listen(2000);
 console.log("Server started.");
 
 const DEBUG = true;
-
 const SOCKET_LIST = {};
 
-const Entity = require("./server/Entity");
+// ------------------------------ END OF SERVER ------------------------------
 
 const Player = (id) => {
   const self = Entity();
@@ -68,7 +75,7 @@ const Player = (id) => {
   };
 
   self.updateSpeed = () => {
-    if (self.pressingRight && self.x < 1280) {
+    if (self.pressingRight && self.x < GAME_WINDOW_WIDTH) {
       self.spdX = self.maxSpd;
     } else if (self.pressingLeft && self.x > 0) {
       self.spdX = -self.maxSpd;
@@ -78,7 +85,7 @@ const Player = (id) => {
 
     if (self.pressingUp && self.y > 0) {
       self.spdY = -self.maxSpd;
-    } else if (self.pressingDown && self.y < 720) {
+    } else if (self.pressingDown && self.y < GAME_WINDOW_HEIGHT) {
       self.spdY = self.maxSpd;
     } else {
       self.spdY = 0;
@@ -117,26 +124,38 @@ Player.onConnect = (socket) => {
   const player = Player(socket.id);
 
   socket.on("keyPress", (data) => {
-    if (data.inputId === "left") {
-      player.pressingLeft = data.state;
-    } else if (data.inputId === "right") {
-      player.pressingRight = data.state;
-    } else if (data.inputId === "up") {
-      player.pressingUp = data.state;
-    } else if (data.inputId === "down") {
-      player.pressingDown = data.state;
-    } else if (data.inputId === "attack") {
-      player.pressingAttack = data.state;
-    } else if (data.inputId === "mouseAngle") {
-      player.mouseAngle = data.state;
-    } else if (data.inputId === "shootRight") {
-      player.shootingRight = data.state;
-    } else if (data.inputId === "shootLeft") {
-      player.shootingLeft = data.state;
-    } else if (data.inputId === "shootUp") {
-      player.shootingUp = data.state;
-    } else if (data.inputId === "shootDown") {
-      player.shootingDown = data.state;
+    const { inputId, state } = data;
+    switch (inputId) {
+      case "left":
+        player.pressingLeft = state;
+        break;
+      case "right":
+        player.pressingRight = state;
+        break;
+      case "up":
+        player.pressingUp = state;
+        break;
+      case "down":
+        player.pressingDown = state;
+        break;
+      case "attack":
+        player.pressingAttack = state;
+        break;
+      case "mouseAngle":
+        player.mouseAngle = state;
+        break;
+      case "shootRight":
+        player.shootingRight = state;
+        break;
+      case "shootLeft":
+        player.shootingLeft = state;
+        break;
+      case "shootUp":
+        player.shootingUp = state;
+        break;
+      case "shootDown":
+        player.shootingDown = state;
+        break;
     }
   });
 
@@ -146,6 +165,7 @@ Player.onConnect = (socket) => {
     bullet: Bullet.getAllInitPack(),
   });
 };
+
 Player.getAllInitPack = () => {
   const players = [];
   for (let i in Player.list) {
@@ -153,10 +173,12 @@ Player.getAllInitPack = () => {
   }
   return players;
 };
+
 Player.onDisconnect = (socket) => {
   delete Player.list[socket.id];
   removePack.player.push(socket.id);
 };
+
 Player.update = () => {
   const pack = [];
   for (let i in Player.list) {
@@ -242,7 +264,7 @@ Bullet.getAllInitPack = () => {
   return bullets;
 };
 
-//----------------------------- PROD -----------------------------
+//----------------------------- DB CONNECTION -----------------------------
 
 const {
   isValidPassword,
@@ -250,13 +272,13 @@ const {
   addUser,
 } = require("./server/dbConnection");
 
-// ------------------------------ END OF PROD ------------------------------
+// ------------------------------ END OF DB CONNECTION ------------------------------
 
 const io = require("socket.io")(serv, {});
+
 io.sockets.on("connection", (socket) => {
   socket.id = Math.random();
   SOCKET_LIST[socket.id] = socket;
-
   socket.on("signIn", async (data) => {
     Player.onConnect(socket);
     if (await isValidPassword(data))
@@ -306,4 +328,4 @@ setInterval(() => {
   initPack.bullet = [];
   removePack.player = [];
   removePack.bullet = [];
-}, 1000 / 100);
+}, 1000 / EXPECTED_FPS);
