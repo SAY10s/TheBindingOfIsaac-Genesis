@@ -24,6 +24,9 @@ const Entity = () => {
     self.updatePosition();
   };
   self.updatePosition = () => {
+    console.log(self.x, self.y, self.spdX, self.spdY);
+    // if (self.x >= 100 || self.x <= 1280) self.x += self.spdX;
+    // if (self.y >= 100 || self.y <= 720) self.y += self.spdY;
     self.x += self.spdX;
     self.y += self.spdY;
   };
@@ -64,17 +67,17 @@ const Player = (id) => {
   };
 
   self.updateSpeed = () => {
-    if (self.pressingRight) {
+    if (self.pressingRight && self.x < 1280) {
       self.spdX = self.maxSpd;
-    } else if (self.pressingLeft) {
+    } else if (self.pressingLeft && self.x > 0) {
       self.spdX = -self.maxSpd;
     } else {
       self.spdX = 0;
     }
 
-    if (self.pressingUp) {
+    if (self.pressingUp && self.y > 0) {
       self.spdY = -self.maxSpd;
-    } else if (self.pressingDown) {
+    } else if (self.pressingDown && self.y < 720) {
       self.spdY = self.maxSpd;
     } else {
       self.spdY = 0;
