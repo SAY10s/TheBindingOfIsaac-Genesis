@@ -78,24 +78,34 @@ const Player = (id) => {
       self.spdY = 0;
     }
   };
+
+  self.getInitPack = () => {
+    return {
+      id: self.id,
+      x: self.x,
+      y: self.y,
+      number: self.number,
+    };
+  };
+  self.getUpdatePack = () => {
+    return {
+      id: self.id,
+      x: self.x,
+      y: self.y,
+    };
+  };
+
   Player.list[id] = self;
-  initPack.player.push({
-    id: self.id,
-    x: self.x,
-    y: self.y,
-    number: self.number,
-  });
+
+  initPack.player.push(self.getInitPack());
   return self;
 };
 Player.list = {};
 
 Player.onConnect = (socket) => {
-  //   console.log("Player connected! " + socket.id);
-
   const player = Player(socket.id);
 
   socket.on("keyPress", (data) => {
-    // console.log("keyPress", data.inputId, data.state);
     if (data.inputId === "left") {
       player.pressingLeft = data.state;
     } else if (data.inputId === "right") {
@@ -110,6 +120,18 @@ Player.onConnect = (socket) => {
       player.mouseAngle = data.state;
     }
   });
+
+  socket.emit("init", {
+    player: Player.getAllInitPack(),
+    bullet: Bullet.getAllInitPack(),
+  });
+};
+Player.getAllInitPack = () => {
+  const players = [];
+  for (let i in Player.list) {
+    players.push(Player.list[i].getInitPack());
+  }
+  return players;
 };
 Player.onDisconnect = (socket) => {
   delete Player.list[socket.id];
@@ -120,11 +142,7 @@ Player.update = () => {
   for (let i in Player.list) {
     let player = Player.list[i];
     player.update();
-    pack.push({
-      id: player.id,
-      x: player.x,
-      y: player.y,
-    });
+    pack.push(player.getUpdatePack());
   }
   return pack;
 };
@@ -152,12 +170,26 @@ const Bullet = (parent, angle) => {
       }
     }
   };
+
+  self.getInitPack = () => {
+    return {
+      id: self.id,
+      x: self.x,
+      y: self.y,
+      number: self.number,
+    };
+  };
+  self.getUpdatePack = () => {
+    return {
+      id: self.id,
+      x: self.x,
+      y: self.y,
+    };
+  };
+
   Bullet.list[self.id] = self;
-  initPack.bullet.push({
-    id: self.id,
-    x: self.x,
-    y: self.y,
-  });
+
+  initPack.bullet.push(self.getInitPack());
   return self;
 };
 Bullet.list = {};
@@ -170,15 +202,19 @@ Bullet.update = () => {
     if (bullet.toRemove) {
       delete Bullet.list[i];
       removePack.bullet.push(bullet.id);
-    } else
-      pack.push({
-        id: bullet.id,
-        x: bullet.x,
-        y: bullet.y,
-      });
+    } else pack.push(bullet.getUpdatePack());
   }
   return pack;
 };
+
+Bullet.getAllInitPack = () => {
+  const bullets = [];
+  for (let i in Bullet.list) {
+    bullets.push(Bullet.list[i].getInitPack());
+  }
+  return bullets;
+};
+
 // ------------------------------ USER AUTHENTICATION ------------------------------
 // -
 // -
