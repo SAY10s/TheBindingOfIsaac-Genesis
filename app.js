@@ -6,7 +6,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/index.html");
 });
 app.use("/client", express.static(__dirname + "/client"));
-serv.listen(2001);
+serv.listen(2000);
 console.log("Server started.");
 
 const DEBUG = true;
@@ -190,24 +190,53 @@ const USERS = {
   say10s: "say10s",
 };
 
-const isValidPassword = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(USERS[data.username] === data.password);
-    }, 10);
-  });
+const getUsers = async () => {
+  try {
+    const res = await client.query("SELECT * FROM users");
+    return res.rows;
+  } catch (err) {
+    console.error(err);
+  }
 };
-const isUsernameTaken = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(USERS[data.username]);
-    }, 10);
-  });
+
+// TEMP TEST
+getUsers()
+  .then((users) => console.log(users))
+  .catch((err) => console.error(err));
+
+const isValidPassword = async (data) => {
+  try {
+    const res = await client.query(
+      "SELECT password FROM users WHERE username = $1",
+      [data.username]
+    );
+    return res.rows.length > 0 && res.rows[0].password === data.password;
+  } catch (err) {
+    console.error(err);
+  }
 };
-const addUser = (data) => {
-  setTimeout(() => {
-    USERS[data.username] = data.password;
-  }, 10);
+
+const isUsernameTaken = async (data) => {
+  try {
+    const res = await client.query(
+      "SELECT username FROM users WHERE username = $1",
+      [data.username]
+    );
+    return res.rows.length > 0;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const addUser = async (data) => {
+  try {
+    await client.query(
+      "INSERT INTO users (username, password) VALUES ($1, $2)",
+      [data.username, data.password]
+    );
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const io = require("socket.io")(serv, {});
