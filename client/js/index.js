@@ -37,12 +37,12 @@ socket.on("signUpResponse", (data) => {
   }
 });
 
-// //TODO: remove
-// //automatic login
-// socket.emit("signIn", {
-//   username: "test",
-//   password: "test",
-// });
+//TODO: remove
+//automatic login
+socket.emit("signIn", {
+  username: "test",
+  password: "test",
+});
 
 //chat
 const chatText = document.getElementById("chat-text");
