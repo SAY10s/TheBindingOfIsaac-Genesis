@@ -24,7 +24,7 @@ const Entity = () => {
     self.updatePosition();
   };
   self.updatePosition = () => {
-    console.log(self.x, self.y, self.spdX, self.spdY);
+    // console.log(self.x, self.y, self.spdX, self.spdY);
     // if (self.x >= 100 || self.x <= 1280) self.x += self.spdX;
     // if (self.y >= 100 || self.y <= 720) self.y += self.spdY;
     self.x += self.spdX;
