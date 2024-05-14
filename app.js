@@ -65,6 +65,18 @@ const Player = (id) => {
     if (self.pressingAttack) {
       self.shootBullet(self.mouseAngle);
     }
+    if (self.shootingRight) {
+      self.shootBullet(0);
+    }
+    if (self.shootingLeft) {
+      self.shootBullet(180);
+    }
+    if (self.shootingUp) {
+      self.shootBullet(270);
+    }
+    if (self.shootingDown) {
+      self.shootBullet(90);
+    }
   };
   self.shootBullet = (angle) => {
     const b = Bullet(self.id, angle);
@@ -134,13 +146,13 @@ Player.onConnect = (socket) => {
       player.pressingAttack = data.state;
     } else if (data.inputId === "mouseAngle") {
       player.mouseAngle = data.state;
-    } else if (data.inputId === "shootingRight") {
+    } else if (data.inputId === "shootRight") {
       player.shootingRight = data.state;
-    } else if (data.inputId === "shootingLeft") {
+    } else if (data.inputId === "shootLeft") {
       player.shootingLeft = data.state;
-    } else if (data.inputId === "shootingUp") {
+    } else if (data.inputId === "shootUp") {
       player.shootingUp = data.state;
-    } else if (data.inputId === "shootingDown") {
+    } else if (data.inputId === "shootDown") {
       player.shootingDown = data.state;
     }
   });
