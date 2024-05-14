@@ -72,6 +72,8 @@ chatForm.onsubmit = (event) => {
 const Img = {};
 Img.player = new Image();
 Img.player.src = "/client/img/isaac.png";
+Img.enemy = new Image();
+Img.enemy.src = "/client/img/maggy.png";
 Img.bullet = new Image();
 Img.bullet.src = "/client/img/tear.png";
 Img.map = new Image();
@@ -90,7 +92,7 @@ const Player = (initPack) => {
   self.hpMax = initPack.hpMax;
   self.score = initPack.score;
 
-  self.draw = () => {
+  self.draw = (playerModel) => {
     let hpWidth = (30 * self.hp) / self.hpMax;
     ctx.fillStyle = "red";
     ctx.fillRect(self.x - hpWidth / 2, self.y - 70, hpWidth, 4);
@@ -99,7 +101,7 @@ const Player = (initPack) => {
     const height = Img.player.height / 4;
 
     ctx.drawImage(
-      Img.player,
+      playerModel,
       0,
       0,
       Img.player.width,
@@ -109,10 +111,6 @@ const Player = (initPack) => {
       width,
       height
     );
-
-    // ctx.fillText(self.number, self.x, self.y);
-
-    // ctx.fillText(self.score, self.x, self.y - 60);
   };
 
   Player.list[self.id] = self;
@@ -194,7 +192,8 @@ setInterval(() => {
   drawMap();
   drawScore();
   for (let i in Player.list) {
-    Player.list[i].draw();
+    const playerModel = Player.list[i].id === selfId ? Img.player : Img.enemy;
+    Player.list[i].draw(playerModel);
   }
   for (let i in Bullet.list) {
     Bullet.list[i].draw();
