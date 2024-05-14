@@ -6,7 +6,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/index.html");
 });
 app.use("/client", express.static(__dirname + "/client"));
-serv.listen(2000);
+serv.listen(2001);
 console.log("Server started.");
 
 const DEBUG = true;
@@ -164,6 +164,24 @@ Bullet.update = () => {
   }
   return pack;
 };
+// ------------------------------ USER AUTHENTICATION ------------------------------
+const { Client } = require("pg");
+
+const client = new Client({
+  host: "db",
+  port: 5432,
+  user: "postgres",
+  password: "moje_haslo",
+  database: "postgres",
+});
+
+client.connect((err) => {
+  if (err) {
+    console.error("Connection error", err.stack);
+  } else {
+    console.log("Connected");
+  }
+});
 
 const USERS = {
   // username:password
@@ -171,6 +189,7 @@ const USERS = {
   test: "test",
   say10s: "say10s",
 };
+
 const isValidPassword = (data) => {
   return new Promise((resolve) => {
     setTimeout(() => {

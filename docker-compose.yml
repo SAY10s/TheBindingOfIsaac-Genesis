@@ -10,7 +10,9 @@ services:
   db:
     image: postgres
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: moje_haslo
+      POSTGRES_DB: postgres
   adminer:
     image: adminer
     ports:
