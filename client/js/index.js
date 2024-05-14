@@ -227,6 +227,26 @@ document.onkeyup = (event) => {
   else if (event.key === "w")
     socket.emit("keyPress", { inputId: "up", state: false });
 };
+document.onkeydown = (event) => {
+  if (event.key === "ArrowRight")
+    socket.emit("keyPress", { inputId: "shootRight", state: true });
+  else if (event.key === "ArrowDown")
+    socket.emit("keyPress", { inputId: "shootDown", state: true });
+  else if (event.key === "ArrowLeft")
+    socket.emit("keyPress", { inputId: "shootLeft", state: true });
+  else if (event.key === "ArrowUp")
+    socket.emit("keyPress", { inputId: "shootUp", state: true });
+};
+document.onkeyup = (event) => {
+  if (event.key === "ArrowRight")
+    socket.emit("keyPress", { inputId: "shootRight", state: false });
+  else if (event.key === "ArrowDown")
+    socket.emit("keyPress", { inputId: "shootDown", state: false });
+  else if (event.key === "ArrowLeft")
+    socket.emit("keyPress", { inputId: "shootLeft", state: false });
+  else if (event.key === "ArrowUp")
+    socket.emit("keyPress", { inputId: "shootUp", state: false });
+};
 
 document.onmousedown = (event) => {
   socket.emit("keyPress", { inputId: "attack", state: true });

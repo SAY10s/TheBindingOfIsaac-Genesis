@@ -42,6 +42,10 @@ const Player = (id) => {
   self.pressingUp = false;
   self.pressingDown = false;
   self.pressingAttack = false;
+  self.shootingRight = false;
+  self.shootingLeft = false;
+  self.shootingUp = false;
+  self.shootingDown = false;
   self.mouseAngle = 0;
   self.maxSpd = 5;
   self.hp = 10;
@@ -125,6 +129,14 @@ Player.onConnect = (socket) => {
       player.pressingAttack = data.state;
     } else if (data.inputId === "mouseAngle") {
       player.mouseAngle = data.state;
+    } else if (data.inputId === "shootingRight") {
+      player.shootingRight = data.state;
+    } else if (data.inputId === "shootingLeft") {
+      player.shootingLeft = data.state;
+    } else if (data.inputId === "shootingUp") {
+      player.shootingUp = data.state;
+    } else if (data.inputId === "shootingDown") {
+      player.shootingDown = data.state;
     }
   });
 
