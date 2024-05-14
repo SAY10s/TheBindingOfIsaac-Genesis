@@ -102,7 +102,11 @@
     self.score = initPack.score;
 
     self.draw = () => {
+      let hpWidth = (30 * self.hp) / self.hpMax;
+      ctx.fillRect(self.x - hpWidth / 2, self.y - 40, hpWidth, 4);
       ctx.fillText(self.number, self.x, self.y);
+
+      ctx.fillText(self.score, self.x, self.y - 60);
     };
 
     Player.list[self.id] = self;
@@ -141,6 +145,8 @@
       if (p) {
         if (pack.x !== undefined) p.x = pack.x;
         if (pack.y !== undefined) p.y = pack.y;
+        if (pack.hp !== undefined) p.hp = pack.hp;
+        if (pack.score !== undefined) p.score = pack.score;
       }
     }
     for (let i = 0; i < data.bullet.length; i++) {
@@ -164,10 +170,10 @@
   setInterval(() => {
     ctx.clearRect(0, 0, 500, 500);
     for (let i in Player.list) {
-      ctx.fillText(Player.list[i].number, Player.list[i].x, Player.list[i].y);
+      Player.list[i].draw();
     }
     for (let i in Bullet.list) {
-      ctx.fillRect(Bullet.list[i].x - 2.5, Bullet.list[i].y - 2.5, 5, 5);
+      Bullet.list[i].draw();
     }
   }, 40);
 

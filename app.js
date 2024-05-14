@@ -1,4 +1,3 @@
-const e = require("express");
 const express = require("express");
 const app = express();
 const serv = require("http").Server(app);
@@ -45,6 +44,9 @@ const Player = (id) => {
   self.pressingAttack = false;
   self.mouseAngle = 0;
   self.maxSpd = 10;
+  self.hp = 10;
+  self.hpMax = 10;
+  self.score = 0;
 
   const super_update = self.update;
   self.update = () => {
@@ -85,6 +87,9 @@ const Player = (id) => {
       x: self.x,
       y: self.y,
       number: self.number,
+      hp: self.hp,
+      hpMax: self.hpMax,
+      score: self.score,
     };
   };
   self.getUpdatePack = () => {
@@ -92,6 +97,8 @@ const Player = (id) => {
       id: self.id,
       x: self.x,
       y: self.y,
+      hp: self.hp,
+      score: self.score,
     };
   };
 
@@ -165,7 +172,14 @@ const Bullet = (parent, angle) => {
     for (let i in Player.list) {
       let p = Player.list[i];
       if (self.getDistance(p) < 32 && self.parent !== p.id) {
-        //handle collision. ex. hp--
+        p.hp -= 1;
+        const shooter = Player.list[self.parent];
+        if (p.hp <= 0) {
+          if (shooter) shooter.score += 1;
+          p.hp = p.hpMax;
+          p.x = Math.random() * 500;
+          p.y = Math.random() * 500;
+        }
         self.toRemove = true;
       }
     }
