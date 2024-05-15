@@ -56,17 +56,17 @@ const Player = (id) => {
   };
 
   self.updateSpeed = () => {
-    if (self.pressingRight && self.x < GAME_WINDOW_WIDTH) {
+    if (self.pressingRight && self.x < GAME_WINDOW_WIDTH - 150) {
       self.spdX = self.maxSpd;
-    } else if (self.pressingLeft && self.x > 0) {
+    } else if (self.pressingLeft && self.x > 150) {
       self.spdX = -self.maxSpd;
     } else {
       self.spdX = 0;
     }
 
-    if (self.pressingUp && self.y > 0) {
+    if (self.pressingUp && self.y > 100) {
       self.spdY = -self.maxSpd;
-    } else if (self.pressingDown && self.y < GAME_WINDOW_HEIGHT) {
+    } else if (self.pressingDown && self.y < GAME_WINDOW_HEIGHT - 170) {
       self.spdY = self.maxSpd;
     } else {
       self.spdY = 0;
