@@ -195,8 +195,8 @@ const Bullet = (parent, angle) => {
         if (p.hp <= 0) {
           if (shooter) shooter.score += 1;
           p.hp = p.hpMax;
-          p.x = Math.random() * 500;
-          p.y = Math.random() * 500;
+          p.x = Math.random() * 1000 + 100;
+          p.y = Math.random() * 500 + 100;
         }
         self.toRemove = true;
       }
@@ -209,6 +209,7 @@ const Bullet = (parent, angle) => {
       x: self.x,
       y: self.y,
       number: self.number,
+      parent: self.parent,
     };
   };
   self.getUpdatePack = () => {

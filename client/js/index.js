@@ -73,15 +73,21 @@ const Img = {};
 Img.player = new Image();
 Img.player.src = "/client/img/isaac.png";
 Img.enemy = new Image();
-Img.enemy.src = "/client/img/maggy.png";
-Img.bullet = new Image();
-Img.bullet.src = "/client/img/tear.png";
+Img.enemy.src = "/client/img/enemy.png";
+Img.playerTear = new Image();
+Img.playerTear.src = "/client/img/playerTear.png";
+Img.enemyTear = new Image();
+Img.enemyTear.src = "/client/img/enemyTear.png";
 Img.map = new Image();
 Img.map.src = "/client/img/bg.png";
-Img.fullHeart = new Image();
-Img.fullHeart.src = "/client/img/fullheart.png";
-Img.halfHeart = new Image();
-Img.halfHeart.src = "/client/img/halfheart.png";
+Img.soulFullHeart = new Image();
+Img.soulFullHeart.src = "/client/img/soulFullHeart.png";
+Img.soulHalfHeart = new Image();
+Img.soulHalfHeart.src = "/client/img/soulHalfHeart.png";
+Img.redFullHeart = new Image();
+Img.redFullHeart.src = "/client/img/redFullHeart.png";
+Img.redHalfHeart = new Image();
+Img.redHalfHeart.src = "/client/img/redHalfHeart.png";
 
 const ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = "30px Arial";
@@ -98,9 +104,14 @@ const Player = (initPack) => {
 
   self.draw = (playerModel) => {
     for (let i = 1; i <= self.hpMax; i++) {
+      const fullHeartModel =
+        selfId === self.id ? Img.redFullHeart : Img.soulFullHeart;
+      const halfHeartModel =
+        selfId === self.id ? Img.redHalfHeart : Img.soulHalfHeart;
+
       if (i < self.hp) {
         ctx.drawImage(
-          Img.fullHeart,
+          fullHeartModel,
           self.x - 60 + (i / 2) * 30,
           self.y - 85,
           30,
@@ -109,7 +120,7 @@ const Player = (initPack) => {
         i++;
       } else if (i === self.hp)
         ctx.drawImage(
-          Img.halfHeart,
+          halfHeartModel,
           self.x - 60 + (i / 2) * 30,
           self.y - 85,
           30,
@@ -143,16 +154,19 @@ const Bullet = (initPack) => {
   self.id = initPack.id;
   self.x = initPack.x;
   self.y = initPack.y;
+  self.parent = initPack.parent;
 
   self.draw = () => {
-    const width = Img.bullet.width / 4;
-    const height = Img.bullet.height / 4;
+    const width = Img.playerTear.width / 4;
+    const height = Img.playerTear.height / 4;
+
+    const tearModel = self.parent === selfId ? Img.playerTear : Img.enemyTear;
     ctx.drawImage(
-      Img.bullet,
+      tearModel,
       0,
       0,
-      Img.bullet.width,
-      Img.bullet.height,
+      Img.playerTear.width,
+      Img.playerTear.height,
       self.x - width / 2,
       self.y - height / 2,
       width,
