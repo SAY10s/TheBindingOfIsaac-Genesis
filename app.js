@@ -1,5 +1,6 @@
 const express = require("express");
 const { Player, Bullet } = require("./server/Player");
+const { initPack, removePack } = require("./server/Packs");
 const {
   GAME_WINDOW_WIDTH,
   GAME_WINDOW_HEIGHT,
@@ -52,6 +53,7 @@ const addUser = (data) => {
 };
 
 // ------------------------------ END OF DEBUG CODE------------------------------
+
 // const {
 //   isValidPassword,
 //   isUsernameTaken,
@@ -96,9 +98,6 @@ io.sockets.on("connection", (socket) => {
   });
 });
 
-const initPack = { player: [], bullet: [] };
-const removePack = { player: [], bullet: [] };
-
 setInterval(() => {
   const pack = {
     player: Player.update(),
@@ -115,9 +114,3 @@ setInterval(() => {
   removePack.player = [];
   removePack.bullet = [];
 }, 1000 / EXPECTED_FPS);
-
-//export initPack and Player
-module.exports = {
-  initPack,
-  Player,
-};

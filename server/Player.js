@@ -1,4 +1,5 @@
 const Entity = require("./Entity");
+const { initPack, removePack } = require("./Packs");
 const { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } = require("./settings");
 
 const Player = (id) => {
@@ -96,10 +97,15 @@ const Player = (id) => {
   Player.list[id] = self;
 
   //FIXME:
-  // initPack.player.push(self.getInitPack());
+  initPack.player.push(self.getInitPack());
   return self;
 };
 Player.list = {};
+
+//TODO:
+// Player.pushToInitPack = (pack) => {
+//   pack.player.push(self.getInitPack());
+// };
 
 Player.onConnect = (socket) => {
   const player = Player(socket.id);
@@ -141,7 +147,7 @@ Player.onConnect = (socket) => {
 
   socket.emit("init", {
     selfId: socket.id,
-    // player: Player.getAllInitPack(),
+    player: Player.getAllInitPack(),
     bullet: Bullet.getAllInitPack(),
   });
 };
@@ -157,7 +163,7 @@ Player.getAllInitPack = () => {
 Player.onDisconnect = (socket) => {
   delete Player.list[socket.id];
   // FIXME:
-  // removePack.player.push(socket.id);
+  removePack.player.push(socket.id);
 };
 
 Player.update = () => {
@@ -222,7 +228,8 @@ const Bullet = (parent, angle) => {
 
   Bullet.list[self.id] = self;
 
-  // initPack.bullet.push(self.getInitPack());
+  // FIXME:
+  initPack.bullet.push(self.getInitPack());
   return self;
 };
 Bullet.list = {};
@@ -234,7 +241,8 @@ Bullet.update = () => {
     bullet.update();
     if (bullet.toRemove) {
       delete Bullet.list[i];
-      // removePack.bullet.push(bullet.id);
+      // FIXME:
+      removePack.bullet.push(bullet.id);
     } else {
       pack.push(bullet.getUpdatePack());
     }

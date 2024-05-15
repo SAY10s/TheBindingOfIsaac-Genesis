@@ -198,7 +198,6 @@ setInterval(() => {
   for (let i in Bullet.list) {
     Bullet.list[i].draw();
   }
-  console.log(1000 / expectedFps);
 }, 10);
 const drawMap = () => {
   ctx.drawImage(Img.map, 0, 0, 1280, 720);
