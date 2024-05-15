@@ -18,8 +18,8 @@ const Player = (id) => {
   self.mouseAngle = 0;
   self.isAttackOnCooldown = false;
   self.maxSpd = 5;
-  self.hp = 10;
-  self.hpMax = 10;
+  self.hp = 5;
+  self.hpMax = 5;
   self.score = 0;
 
   const super_update = self.update;

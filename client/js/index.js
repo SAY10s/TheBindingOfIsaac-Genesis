@@ -78,6 +78,10 @@ Img.bullet = new Image();
 Img.bullet.src = "/client/img/tear.png";
 Img.map = new Image();
 Img.map.src = "/client/img/bg.png";
+Img.fullHeart = new Image();
+Img.fullHeart.src = "/client/img/fullheart.png";
+Img.halfHeart = new Image();
+Img.halfHeart.src = "/client/img/halfheart.png";
 
 const ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = "30px Arial";
@@ -93,9 +97,25 @@ const Player = (initPack) => {
   self.score = initPack.score;
 
   self.draw = (playerModel) => {
-    let hpWidth = (30 * self.hp) / self.hpMax;
-    ctx.fillStyle = "red";
-    ctx.fillRect(self.x - hpWidth / 2, self.y - 70, hpWidth, 4);
+    for (let i = 1; i <= self.hpMax; i++) {
+      if (i < self.hp) {
+        ctx.drawImage(
+          Img.fullHeart,
+          self.x - 60 + (i / 2) * 30,
+          self.y - 85,
+          30,
+          30
+        );
+        i++;
+      } else if (i === self.hp)
+        ctx.drawImage(
+          Img.halfHeart,
+          self.x - 60 + (i / 2) * 30,
+          self.y - 85,
+          30,
+          30
+        );
+    }
 
     const width = Img.player.width / 4;
     const height = Img.player.height / 4;
