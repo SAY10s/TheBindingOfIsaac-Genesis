@@ -1,25 +1,37 @@
-<div class="signDiv">
-  <input type="text" id="signDiv-username" placeholder="Username" /><br />
-  <input type="text" id="signDiv-password" placeholder="Password" /><br />
-  <button id="signDiv-signIn">Sign in</button>
-  <button id="signDiv-signUp">Sign up</button>
-</div>
-<div id="gameDiv" style="display: none">
-  <canvas
-    id="ctx"
-    width="1280"
-    height="720"
-    style="border: 1px solid black"
-  ></canvas>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TBOI Genesis</title>
+    <link rel="stylesheet" href="client/style.css" />
+  </head>
+  <body>
+    <div class="signDiv">
+      <input type="text" id="signDiv-username" placeholder="Username" /><br />
+      <input type="text" id="signDiv-password" placeholder="Password" /><br />
+      <button id="signDiv-signIn">Sign in</button>
+      <button id="signDiv-signUp">Sign up</button>
+    </div>
+    <div id="gameDiv" style="display: none">
+      <h1>TBOI: Genesis</h1>
+      <div class="canvasWrapper">
+        <canvas id="ctx" width="1280" height="720"></canvas>
+      </div>
 
-  <div id="chat-text" style="width: 500px; height: 100px; overflow-y: scroll">
-    <div>Type something!</div>
-  </div>
+      <div
+        id="chat-text"
+        style="width: 500px; height: 100px; overflow-y: scroll"
+      >
+        <div>Type something!</div>
+      </div>
 
-  <form id="chat-form">
-    <input type="text" id="chat-input" style="width: 500px" />
-  </form>
-</div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" style="width: 500px" />
+      </form>
+    </div>
 
-<script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
-<script src="client/js/index.js" type="text/javascript"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
+    <script src="client/js/index.js" type="text/javascript"></script>
+  </body>
+</html>
