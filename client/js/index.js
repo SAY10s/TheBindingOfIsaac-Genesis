@@ -72,8 +72,12 @@ chatForm.onsubmit = (event) => {
 const Img = {};
 Img.player = new Image();
 Img.player.src = "/client/img/isaac.png";
+Img.playerShooting = new Image();
+Img.playerShooting.src = "/client/img/isaacShooting.png";
 Img.enemy = new Image();
 Img.enemy.src = "/client/img/enemy.png";
+Img.enemyShooting = new Image();
+Img.enemyShooting.src = "/client/img/enemyShooting.png";
 Img.playerTear = new Image();
 Img.playerTear.src = "/client/img/playerTear.png";
 Img.enemyTear = new Image();
@@ -101,6 +105,7 @@ const Player = (initPack) => {
   self.hp = initPack.hp;
   self.hpMax = initPack.hpMax;
   self.score = initPack.score;
+  self.isClosingEyes = initPack.isClosingEyes;
 
   self.draw = (playerModel) => {
     for (let i = 1; i <= self.hpMax; i++) {
@@ -200,6 +205,8 @@ socket.on("update", (data) => {
       if (pack.y !== undefined) p.y = pack.y;
       if (pack.hp !== undefined) p.hp = pack.hp;
       if (pack.score !== undefined) p.score = pack.score;
+      if (pack.isClosingEyes !== undefined)
+        p.isClosingEyes = pack.isClosingEyes;
     }
   }
   for (let i = 0; i < data.bullet.length; i++) {
@@ -226,7 +233,15 @@ setInterval(() => {
   drawMap();
   drawScore();
   for (let i in Player.list) {
-    const playerModel = Player.list[i].id === selfId ? Img.player : Img.enemy;
+    let playerModel = Img.player;
+    if (Player.list[i].id === selfId) {
+      playerModel = Player.list[i].isClosingEyes
+        ? Img.playerShooting
+        : Img.player;
+    } else
+      playerModel = Player.list[i].isClosingEyes
+        ? Img.enemyShooting
+        : Img.enemy;
     Player.list[i].draw(playerModel);
   }
   for (let i in Bullet.list) {

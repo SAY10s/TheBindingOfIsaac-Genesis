@@ -21,6 +21,7 @@ const Player = (id) => {
   self.hp = 5;
   self.hpMax = 5;
   self.score = 0;
+  self.isClosingEyes = false;
 
   const super_update = self.update;
   self.update = () => {
@@ -49,6 +50,10 @@ const Player = (id) => {
       b.x = self.x;
       b.y = self.y;
       self.isAttackOnCooldown = true;
+      self.isClosingEyes = true;
+      setTimeout(() => {
+        self.isClosingEyes = false;
+      }, 300);
       setTimeout(() => {
         self.isAttackOnCooldown = false;
       }, 500);
@@ -82,6 +87,7 @@ const Player = (id) => {
       hp: self.hp,
       hpMax: self.hpMax,
       score: self.score,
+      isClosingEyes: self.isClosingEyes,
     };
   };
   self.getUpdatePack = () => {
@@ -91,6 +97,7 @@ const Player = (id) => {
       y: self.y,
       hp: self.hp,
       score: self.score,
+      isClosingEyes: self.isClosingEyes,
     };
   };
 
