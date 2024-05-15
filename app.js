@@ -24,36 +24,14 @@ const SOCKET_LIST = {};
 
 //----------------------------- DB CONNECTION -----------------------------
 
-// ------------------------------ DEBUG CODE ------------------------------
+// TESTING WITHOUT DB CONNECTION
+const {
+  isValidPassword,
+  isUsernameTaken,
+  addUser,
+} = require("./test/testDbConnection");
 
-const USERS = {
-  // username:password
-  admin: "admin",
-  test: "test",
-  say10s: "say10s",
-};
-const isValidPassword = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(USERS[data.username] === data.password);
-    }, 10);
-  });
-};
-const isUsernameTaken = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(USERS[data.username]);
-    }, 10);
-  });
-};
-const addUser = (data) => {
-  setTimeout(() => {
-    USERS[data.username] = data.password;
-  }, 10);
-};
-
-// ------------------------------ END OF DEBUG CODE------------------------------
-
+// TESTING WITH DB CONNECTION
 // const {
 //   isValidPassword,
 //   isUsernameTaken,
@@ -61,6 +39,8 @@ const addUser = (data) => {
 // } = require("./server/dbConnection");
 
 // ------------------------------ END OF DB CONNECTION ------------------------------
+
+// ------------------------------------- SOCKET -------------------------------------
 
 const io = require("socket.io")(serv, {});
 
