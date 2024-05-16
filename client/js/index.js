@@ -60,8 +60,10 @@ socket.on("evalAnswer", (data) => {
 
 chatForm.onsubmit = (event) => {
   event.preventDefault();
-  if (chatInput.value[0] === "/") {
+  if (chatInput.value[0] === "//") {
     socket.emit("evalServer", chatInput.value.slice(1));
+  } else if (chatInput.value.slice(0, 8).toLocaleLowerCase() === "/setname") {
+    socket.emit("setName", chatInput.value.slice(9));
   } else {
     socket.emit("sendMsgToServer", chatInput.value);
   }
@@ -100,7 +102,7 @@ ctx.font = "30px Arial";
 const Player = (initPack) => {
   const self = {};
   self.id = initPack.id;
-  self.number = initPack.number;
+  self.name = initPack.name;
   self.x = initPack.x;
   self.y = initPack.y;
   self.hp = initPack.hp;
@@ -109,7 +111,7 @@ const Player = (initPack) => {
   self.isClosingEyes = initPack.isClosingEyes;
 
   if (!scoreboard.innerHTML.includes(self.id)) {
-    scoreboard.innerHTML += `<div id=${self.id}>0 - ${self.id}</div>`;
+    scoreboard.innerHTML += `<div id=${self.id}>0 - ${self.name}</div>`;
   }
 
   self.draw = (playerModel) => {
@@ -136,6 +138,9 @@ const Player = (initPack) => {
           30,
           30,
         );
+      ctx.fillStyle = "white";
+      ctx.font = "30px upheaval";
+      ctx.fillText(self.name, self.x - self.name.length * 8.2, self.y - 95);
     }
 
     const width = Img.player.width / 4;
@@ -209,10 +214,11 @@ socket.on("update", (data) => {
       if (pack.x !== undefined) p.x = pack.x;
       if (pack.y !== undefined) p.y = pack.y;
       if (pack.hp !== undefined) p.hp = pack.hp;
+      if (pack.name !== undefined) p.name = pack.name.slice(0, 20);
       if (pack.score !== undefined) {
         const playerScoreDiv = document.getElementById(p.id);
         if (playerScoreDiv) {
-          playerScoreDiv.innerHTML = `${pack.score} - ${p.id}`;
+          playerScoreDiv.innerHTML = `${pack.score} - ${p.name}`;
         }
         p.score = pack.score;
       }
@@ -235,7 +241,7 @@ socket.on("remove", (data) => {
     if (playerScoreDiv) {
       playerScoreDiv.parentNode.removeChild(playerScoreDiv);
     }
-    delete Player.list[data.player[i]]; // Usuń gracza z listy
+    delete Player.list[data.player[i]];
   }
   for (let i = 0; i < data.bullet.length; i++) {
     delete Bullet.list[data.bullet[i]];

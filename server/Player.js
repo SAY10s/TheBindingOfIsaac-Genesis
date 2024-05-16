@@ -5,7 +5,7 @@ const { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } = require("./settings");
 const Player = (id) => {
   const self = Entity();
   self.id = id;
-  self.number = "" + Math.floor(10 * Math.random());
+  self.name = "ISAAC " + Math.floor(Math.random() * 100);
   self.pressingRight = false;
   self.pressingLeft = false;
   self.pressingUp = false;
@@ -83,7 +83,7 @@ const Player = (id) => {
       id: self.id,
       x: self.x,
       y: self.y,
-      number: self.number,
+      name: self.name,
       hp: self.hp,
       hpMax: self.hpMax,
       score: self.score,
@@ -95,6 +95,7 @@ const Player = (id) => {
       id: self.id,
       x: self.x,
       y: self.y,
+      name: self.name,
       hp: self.hp,
       score: self.score,
       isClosingEyes: self.isClosingEyes,

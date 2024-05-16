@@ -67,7 +67,7 @@ io.sockets.on("connection", (socket) => {
     Player.onDisconnect(socket);
   });
   socket.on("sendMsgToServer", (data) => {
-    let playerName = ("" + socket.id).slice(2, 7);
+    let playerName = Player.list[socket.id].name;
     for (let i in SOCKET_LIST) {
       SOCKET_LIST[i].emit("addToChat", playerName + ": " + data);
     }
@@ -76,6 +76,10 @@ io.sockets.on("connection", (socket) => {
     if (!DEBUG) return;
     let res = eval(data);
     socket.emit("evalAnswer", res);
+  });
+  socket.on("setName", (data) => {
+    Player.list[socket.id].name = data;
+    console.log(Player.list[socket.id].name);
   });
 });
 

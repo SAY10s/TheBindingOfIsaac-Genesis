@@ -19,7 +19,6 @@ body {
 }
 .canvasWrapper {
   position: relative;
-  border: 10px solid black;
   height: 740px;
   border-radius: 1rem;
 }
@@ -46,6 +45,7 @@ h1 {
   padding: 10px;
   margin-top: 20px;
   background-color: black;
+  font-size: 1.5rem;
 }
 
 #chat-input {
