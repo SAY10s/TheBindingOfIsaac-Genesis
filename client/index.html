@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,18 +16,20 @@
     <div id="gameDiv" style="display: none">
       <h1>TBOI: Genesis</h1>
       <div class="canvasWrapper">
-        <div id="scoreboard">
-        </div>
+        <div id="scoreboard"></div>
         <canvas id="ctx" width="1280" height="720"></canvas>
       </div>
-
 
       <div id="chat-text">
         <div>You have join the room</div>
       </div>
 
       <form id="chat-form">
-        <input type="text" id="chat-input" />
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Type something there!"
+        />
       </form>
     </div>
 
