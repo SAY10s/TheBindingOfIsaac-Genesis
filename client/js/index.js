@@ -110,8 +110,6 @@ const Player = (initPack) => {
   self.score = initPack.score;
   self.isClosingEyes = initPack.isClosingEyes;
 
-  //if (scoreboard.innerHTML doesnt contain self.id)
-
   if (!scoreboard.innerHTML.includes(self.id)) {
     scoreboard.innerHTML += `<div id=${self.id}>${self.id}: 0</div>`;
   }
@@ -214,8 +212,10 @@ socket.on("update", (data) => {
       if (pack.y !== undefined) p.y = pack.y;
       if (pack.hp !== undefined) p.hp = pack.hp;
       if (pack.score !== undefined) {
-        // let playerScoreDiv = document.getElementById(p.id);
-        // playerScoreDiv.innerHTML = pack.score;
+        const playerScoreDiv = document.getElementById(p.id);
+        if (playerScoreDiv) {
+          playerScoreDiv.innerHTML = `${p.id}: ${pack.score}`;
+        }
         p.score = pack.score;
       }
       if (pack.isClosingEyes !== undefined)
