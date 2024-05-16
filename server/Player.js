@@ -191,6 +191,13 @@ const Bullet = (parent, angle) => {
   self.update = () => {
     if (self.timer++ > 100) {
       self.toRemove = true;
+    } else if (
+      self.x < 100 ||
+      self.x > GAME_WINDOW_WIDTH - 100 ||
+      self.y < 100 ||
+      self.y > GAME_WINDOW_HEIGHT - 100
+    ) {
+      self.toRemove = true;
     }
     super_update();
 
