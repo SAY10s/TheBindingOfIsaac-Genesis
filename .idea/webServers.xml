@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="27245cb3-628e-4e45-bfaa-3ca98b24f0b3" name="nikodemmajzner.pl">
-        <fileTransfer rootFolder="/var/www/nikodemmajzner.pl/TheBindingOfIsaac-Genesis" accessType="SFTP" host="nikodemmajzner.pl" port="22" sshConfigId="36a2da7e-27a3-4291-8096-3818d7e8ca5a" sshConfig="root@nikodemmajzner.pl:22">
+        <fileTransfer accessType="SFTP" host="nikodemmajzner.pl" port="22" sshConfigId="36a2da7e-27a3-4291-8096-3818d7e8ca5a" sshConfig="root@nikodemmajzner.pl:22">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" isUseSudo="true" />
           </advancedOptions>
