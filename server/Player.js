@@ -199,7 +199,7 @@ const Bullet = (parent, angle) => {
     ) {
       self.toRemove = true;
     }
-    super_update();
+    super_update(7);
 
     for (let i in Player.list) {
       let p = Player.list[i];
