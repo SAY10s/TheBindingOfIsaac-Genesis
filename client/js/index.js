@@ -69,7 +69,6 @@ chatForm.onsubmit = (event) => {
 };
 // scoreboard
 const scoreboard = document.getElementById("scoreboard");
-scoreboard.innerHTML += "<div>HI</div>";
 
 //game
 function loadImage(src) {
@@ -110,7 +109,7 @@ const Player = (initPack) => {
   self.isClosingEyes = initPack.isClosingEyes;
 
   if (!scoreboard.innerHTML.includes(self.id)) {
-    scoreboard.innerHTML += `<div id=${self.id}>${self.id}: 0</div>`;
+    scoreboard.innerHTML += `<div id=${self.id}>0 - ${self.id}</div>`;
   }
 
   self.draw = (playerModel) => {
@@ -126,7 +125,7 @@ const Player = (initPack) => {
           self.x - 60 + (i / 2) * 30,
           self.y - 85,
           30,
-          30
+          30,
         );
         i++;
       } else if (i === self.hp)
@@ -135,7 +134,7 @@ const Player = (initPack) => {
           self.x - 60 + (i / 2) * 30,
           self.y - 85,
           30,
-          30
+          30,
         );
     }
 
@@ -151,7 +150,7 @@ const Player = (initPack) => {
       self.x - width / 2,
       self.y - height / 2,
       width,
-      height
+      height,
     );
   };
 
@@ -181,7 +180,7 @@ const Bullet = (initPack) => {
       self.x - width / 2,
       self.y - height / 2,
       width,
-      height
+      height,
     );
   };
 
@@ -213,7 +212,7 @@ socket.on("update", (data) => {
       if (pack.score !== undefined) {
         const playerScoreDiv = document.getElementById(p.id);
         if (playerScoreDiv) {
-          playerScoreDiv.innerHTML = `${p.id}: ${pack.score}`;
+          playerScoreDiv.innerHTML = `${pack.score} - ${p.id}`;
         }
         p.score = pack.score;
       }
@@ -232,7 +231,11 @@ socket.on("update", (data) => {
 });
 socket.on("remove", (data) => {
   for (let i = 0; i < data.player.length; i++) {
-    delete Player.list[data.player[i]];
+    const playerScoreDiv = document.getElementById(data.player[i]);
+    if (playerScoreDiv) {
+      playerScoreDiv.parentNode.removeChild(playerScoreDiv);
+    }
+    delete Player.list[data.player[i]]; // Usuń gracza z listy
   }
   for (let i = 0; i < data.bullet.length; i++) {
     delete Bullet.list[data.bullet[i]];
@@ -243,7 +246,6 @@ setInterval(() => {
   if (!selfId) return;
   ctx.clearRect(0, 0, 500, 500);
   drawMap();
-  drawScore();
   for (let i in Player.list) {
     let playerModel = Img.player;
     if (Player.list[i].id === selfId) {
@@ -262,10 +264,6 @@ setInterval(() => {
 }, 10);
 const drawMap = () => {
   ctx.drawImage(Img.map, 0, 0, 1280, 720);
-};
-const drawScore = () => {
-  ctx.fillStyle = "white";
-  ctx.fillText(Player.list[selfId].score, 0, 30);
 };
 
 document.onkeydown = (event) => {

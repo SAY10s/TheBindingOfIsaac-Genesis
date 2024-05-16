@@ -17,6 +17,7 @@ body {
   background-color: #734136;
 }
 .canvasWrapper {
+  position: relative;
   border: 10px solid black;
   height: 740px;
   border-radius: 1rem;
@@ -50,4 +51,13 @@ h1 {
   padding: 5px;
   background-color: #734136;
   border: 1px solid black;
+}
+#scoreboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  font-size: 1.5rem;
+  line-height: 1rem;
+  color: white;
 }

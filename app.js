@@ -63,6 +63,7 @@ io.sockets.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {
     delete SOCKET_LIST[socket.id];
+    console.log("Player disconnected." + socket.id);
     Player.onDisconnect(socket);
   });
   socket.on("sendMsgToServer", (data) => {
