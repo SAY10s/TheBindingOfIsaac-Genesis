@@ -1,6 +1,6 @@
 @font-face {
   font-family: "upheaval";
-  src: url("/client/fonts/upheaval/upheavtt.ttf") format("truetype");
+  src: url("//Isaac/client/fonts/upheaval/upheavtt.ttf") format("truetype");
 }
 
 * {
