@@ -72,29 +72,28 @@ const scoreboard = document.getElementById("scoreboard");
 scoreboard.innerHTML += "<div>HI</div>";
 
 //game
+function loadImage(src) {
+  const img = new Image();
+  img.src = src;
+  return img;
+}
+const imagePaths = {
+  player: "/client/img/isaac.png",
+  playerShooting: "/client/img/isaacShooting.png",
+  enemy: "/client/img/enemy.png",
+  enemyShooting: "/client/img/enemyShooting.png",
+  playerTear: "/client/img/playerTear.png",
+  enemyTear: "/client/img/enemyTear.png",
+  map: "/client/img/bg.png",
+  soulFullHeart: "/client/img/soulFullHeart.png",
+  soulHalfHeart: "/client/img/soulHalfHeart.png",
+  redFullHeart: "/client/img/redFullHeart.png",
+  redHalfHeart: "/client/img/redHalfHeart.png",
+};
 const Img = {};
-Img.player = new Image();
-Img.player.src = "/client/img/isaac.png";
-Img.playerShooting = new Image();
-Img.playerShooting.src = "/client/img/isaacShooting.png";
-Img.enemy = new Image();
-Img.enemy.src = "/client/img/enemy.png";
-Img.enemyShooting = new Image();
-Img.enemyShooting.src = "/client/img/enemyShooting.png";
-Img.playerTear = new Image();
-Img.playerTear.src = "/client/img/playerTear.png";
-Img.enemyTear = new Image();
-Img.enemyTear.src = "/client/img/enemyTear.png";
-Img.map = new Image();
-Img.map.src = "/client/img/bg.png";
-Img.soulFullHeart = new Image();
-Img.soulFullHeart.src = "/client/img/soulFullHeart.png";
-Img.soulHalfHeart = new Image();
-Img.soulHalfHeart.src = "/client/img/soulHalfHeart.png";
-Img.redFullHeart = new Image();
-Img.redFullHeart.src = "/client/img/redFullHeart.png";
-Img.redHalfHeart = new Image();
-Img.redHalfHeart.src = "/client/img/redHalfHeart.png";
+for (let key in imagePaths) {
+  Img[key] = loadImage(imagePaths[key]);
+}
 
 const ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = "30px Arial";
