@@ -29,8 +29,11 @@ docker-compose up
 
 Now the game is running on port `http://localhost:2000`.
 
+## Acknowledgements
+I would like to extend my heartfelt thanks to [Baxoner](https://github.com/Baxoner) for his invaluable assistance with `Nginx` and `Linux`. His expertise and support have been instrumental in the development and smooth operation of this project. Thank you, Baxoner, for your generous help and guidance!
 
-### Feel free to open an `issue` if you have any questions or run into any problems. Also feel free to modify the code and open a `pull request`! Happy coding!
+## Contributions and Issues
+Feel free to open an `issue` if you have any questions or run into any problems. Also feel free to modify the code and open a `pull request`! Happy coding!
 
 
 
