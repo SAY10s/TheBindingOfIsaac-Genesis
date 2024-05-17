@@ -1,105 +1,107 @@
 import express from "express";
 import { Player, Bullet } from "./server/Player.js";
 import { initPack, removePack } from "./server/Packs.js";
-import {
-  GAME_WINDOW_WIDTH,
-  GAME_WINDOW_HEIGHT,
-  EXPECTED_FPS,
-} from "./server/settings.js";
-import { Server } from "http";
+import { EXPECTED_FPS } from "./server/settings.js";
+import { Server as HttpServer } from "http";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-// ------------------------------ SERVER ------------------------------
-const app = express();
-const serv = Server(app);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/client/index.html");
-});
-
-app.use("/client", express.static(__dirname + "/client"));
-serv.listen(2000);
-console.log("Server started.");
-
-const DEBUG = true;
-const SOCKET_LIST = {};
-
-// ------------------------------ END OF SERVER ------------------------------
-
-//----------------------------- DB CONNECTION -----------------------------
-
-// TESTING WITHOUT DB CONNECTION
+import { dirname, join } from "path";
+import { Server as SocketServer } from "socket.io";
 import {
   isValidPassword,
   isUsernameTaken,
   addUser,
 } from "./test/testDbConnection.js";
 
-// TESTING WITH DB CONNECTION
-// const {
-//   isValidPassword,
-//   isUsernameTaken,
-//   addUser,
-// } = require("./server/dbConnection");
+// ------------------------------ SERVER SETUP ------------------------------
+const app = express();
+const server = HttpServer(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// ------------------------------ END OF DB CONNECTION ------------------------------
+const PORT = 2000;
+const DEBUG = true;
+const SOCKET_LIST = {};
 
-// ------------------------------------- SOCKET -------------------------------------
+app.get("/", (req, res) => {
+  res.sendFile(join(__dirname, "/client/index.html"));
+});
 
-import { Server as socketServer } from "socket.io";
-const io = new socketServer(serv, {});
-io.sockets.on("connection", (socket) => {
-  let id = Math.random();
-  SOCKET_LIST[socket.id] = socket;
+app.use("/client", express.static(join(__dirname, "/client")));
+
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}.`);
+});
+
+// ------------------------------ SOCKET SETUP ------------------------------
+const io = new SocketServer(server, {});
+
+io.on("connection", (socket) => {
+  const id = socket.id;
+  SOCKET_LIST[id] = socket;
+  console.log(`Player connected: ${id}`);
+
   socket.on("signIn", async (data) => {
-    Player.onConnect(socket);
-    if (await isValidPassword(data))
-      socket.emit("signInResponse", { success: true });
-    else socket.emit("signInResponse", { success: false });
+    const isValid = await isValidPassword(data);
+    socket.emit("signInResponse", { success: isValid });
+    if (isValid) Player.onConnect(socket);
   });
+
   socket.on("signUp", async (data) => {
-    if (!(await isUsernameTaken(data))) {
-      addUser(data);
+    const usernameTaken = await isUsernameTaken(data);
+    if (!usernameTaken) {
+      await addUser(data);
       socket.emit("signUpResponse", { success: true });
     } else {
       socket.emit("signUpResponse", { success: false });
     }
   });
+
   socket.on("disconnect", () => {
     delete SOCKET_LIST[id];
-    console.log("Player disconnected." + id);
     Player.onDisconnect(socket);
+    console.log(`Player disconnected: ${id}`);
   });
+
   socket.on("sendMsgToServer", (data) => {
-    let playerName = Player.list[id].name;
-    for (let i in SOCKET_LIST) {
-      SOCKET_LIST[i].emit("addToChat", playerName + ": " + data);
+    const playerName = Player.list[id]?.name || "Unknown";
+    for (const socketId in SOCKET_LIST) {
+      SOCKET_LIST[socketId].emit("addToChat", `${playerName}: ${data}`);
     }
   });
+
   socket.on("evalServer", (data) => {
-    if (!DEBUG) return;
-    let res = eval(data);
-    socket.emit("evalAnswer", res);
+    if (DEBUG) {
+      try {
+        const res = eval(data);
+        socket.emit("evalAnswer", res);
+      } catch (e) {
+        socket.emit("evalAnswer", `Error: ${e.message}`);
+      }
+    }
   });
+
   socket.on("setName", (data) => {
-    Player.list[id].name = data;
-    console.log(Player.list[id].name);
+    if (Player.list[id]) {
+      Player.list[id].name = data;
+      console.log(`Player name set to: ${Player.list[id].name}`);
+    }
   });
 });
 
+// ------------------------------ GAME LOOP ------------------------------
 setInterval(() => {
   const pack = {
     player: Player.update(),
     bullet: Bullet.update(),
   };
-  for (let i in SOCKET_LIST) {
-    let socket = SOCKET_LIST[i];
+
+  for (const socketId in SOCKET_LIST) {
+    const socket = SOCKET_LIST[socketId];
     socket.emit("init", initPack);
     socket.emit("update", pack);
     socket.emit("remove", removePack);
   }
+
   initPack.player = [];
   initPack.bullet = [];
   removePack.player = [];

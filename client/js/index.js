@@ -1,310 +1,330 @@
-const socket = io();
-
-//sign
-const signDiv = document.querySelector(".signDiv");
-const signDivUsername = document.getElementById("signDiv-username");
-const signDivPassword = document.getElementById("signDiv-password");
-const signIn = document.getElementById("signDiv-signIn");
-const signUp = document.getElementById("signDiv-signUp");
-const gameDiv = document.getElementById("gameDiv");
-
-signIn.onclick = () => {
-  socket.emit("signIn", {
-    username: signDivUsername.value,
-    password: signDivPassword.value,
-  });
-};
-signUp.onclick = () => {
-  socket.emit("signUp", {
-    username: signDivUsername.value,
-    password: signDivPassword.value,
-  });
-};
-socket.on("signInResponse", (data) => {
-  if (data.success) {
-    signDiv.style.display = "none";
-    gameDiv.style.display = "inline-block";
-  } else {
-    signDivUsername.value = "";
-    signDivPassword.value = "";
+class GameClient {
+  constructor() {
+    this.socket = io();
+    this.selfId = null;
+    this.Img = {};
+    this.ctx = document.getElementById("ctx").getContext("2d");
+    this.scoreboard = document.getElementById("scoreboard");
+    this.init();
+    this.setupEventListeners();
   }
-});
-socket.on("signUpResponse", (data) => {
-  if (data.success) {
-    alert("Sign up successful.");
-  } else {
-    alert("Sign up unsuccessful.");
+
+  init() {
+    this.loadImages();
+    setInterval(() => this.updateGame(), 10);
   }
-});
 
-//TODO: remove
-//automatic login
-socket.emit("signIn", {
-  username: "test",
-  password: "test",
-});
-
-//chat
-const chatText = document.getElementById("chat-text");
-const chatForm = document.getElementById("chat-form");
-const chatInput = document.getElementById("chat-input");
-
-socket.on("addToChat", (data) => {
-  chatText.innerHTML += `<div>${data}</div>`;
-  chatText.scrollTop = chatText.scrollHeight;
-});
-
-socket.on("evalAnswer", (data) => {
-  console.log(data);
-});
-
-chatForm.onsubmit = (event) => {
-  event.preventDefault();
-  if (chatInput.value[0] === "//") {
-    socket.emit("evalServer", chatInput.value.slice(1));
-  } else if (chatInput.value.slice(0, 8).toLocaleLowerCase() === "/setname") {
-    socket.emit("setName", chatInput.value.slice(9));
-  } else {
-    socket.emit("sendMsgToServer", chatInput.value);
+  loadImages() {
+    const imagePaths = {
+      player: "/client/img/isaac.png",
+      playerShooting: "/client/img/isaacShooting.png",
+      enemy: "/client/img/enemy.png",
+      enemyShooting: "/client/img/enemyShooting.png",
+      playerTear: "/client/img/playerTear.png",
+      enemyTear: "/client/img/enemyTear.png",
+      map: "/client/img/bg.png",
+      soulFullHeart: "/client/img/soulFullHeart.png",
+      soulHalfHeart: "/client/img/soulHalfHeart.png",
+      redFullHeart: "/client/img/redFullHeart.png",
+      redHalfHeart: "/client/img/redHalfHeart.png",
+    };
+    for (let key in imagePaths) {
+      this.Img[key] = this.loadImage(imagePaths[key]);
+    }
   }
-  chatInput.value = "";
-};
-// scoreboard
-const scoreboard = document.getElementById("scoreboard");
 
-//game
-function loadImage(src) {
-  const img = new Image();
-  img.src = src;
-  return img;
+  loadImage(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
+  }
+
+  setupEventListeners() {
+    document.querySelector("#signDiv-signIn").onclick = () => this.signIn();
+    document.querySelector("#signDiv-signUp").onclick = () => this.signUp();
+    this.socket.on("signInResponse", (data) => this.handleSignInResponse(data));
+    this.socket.on("signUpResponse", (data) => this.handleSignUpResponse(data));
+    this.socket.on("addToChat", (data) => this.addToChat(data));
+    this.socket.on("evalAnswer", (data) => console.log(data));
+    this.socket.on("init", (data) => this.handleInit(data));
+    this.socket.on("update", (data) => this.handleUpdate(data));
+    this.socket.on("remove", (data) => this.handleRemove(data));
+    document.getElementById("chat-form").onsubmit = (event) =>
+      this.handleChatSubmit(event);
+
+    document.onkeydown = (event) => this.handleKeydown(event);
+    document.onkeyup = (event) => this.handleKeyup(event);
+
+    this.socket.emit("signIn", {
+      username: "test",
+      password: "test",
+    });
+  }
+
+  signIn() {
+    const username = document.getElementById("signDiv-username").value;
+    const password = document.getElementById("signDiv-password").value;
+    this.socket.emit("signIn", { username, password });
+  }
+
+  signUp() {
+    const username = document.getElementById("signDiv-username").value;
+    const password = document.getElementById("signDiv-password").value;
+    this.socket.emit("signUp", { username, password });
+  }
+
+  handleSignInResponse(data) {
+    if (data.success) {
+      document.querySelector(".signDiv").style.display = "none";
+      document.getElementById("gameDiv").style.display = "inline-block";
+    } else {
+      document.getElementById("signDiv-username").value = "";
+      document.getElementById("signDiv-password").value = "";
+    }
+  }
+
+  handleSignUpResponse(data) {
+    alert(data.success ? "Sign up successful." : "Sign up unsuccessful.");
+  }
+
+  addToChat(data) {
+    const chatText = document.getElementById("chat-text");
+    chatText.innerHTML += `<div>${data}</div>`;
+    chatText.scrollTop = chatText.scrollHeight;
+  }
+
+  handleChatSubmit(event) {
+    event.preventDefault();
+    const chatInput = document.getElementById("chat-input");
+    if (chatInput.value[0] === "//") {
+      this.socket.emit("evalServer", chatInput.value.slice(1));
+    } else if (chatInput.value.slice(0, 8).toLowerCase() === "/setname") {
+      this.socket.emit("setName", chatInput.value.slice(9));
+    } else {
+      this.socket.emit("sendMsgToServer", chatInput.value);
+    }
+    chatInput.value = "";
+  }
+
+  handleInit(data) {
+    if (data.selfId) this.selfId = data.selfId;
+    for (let playerData of data.player) {
+      new Player(playerData, this);
+    }
+    for (let bulletData of data.bullet) {
+      new Bullet(bulletData, this);
+    }
+  }
+
+  handleUpdate(data) {
+    for (let pack of data.player) {
+      const player = Player.list[pack.id] || new Player(pack, this);
+      if (player) player.update(pack);
+    }
+    for (let pack of data.bullet) {
+      const bullet = Bullet.list[pack.id];
+      if (bullet) bullet.update(pack);
+    }
+  }
+
+  handleRemove(data) {
+    for (let id of data.player) {
+      const playerScoreDiv = document.getElementById(id);
+      if (playerScoreDiv) playerScoreDiv.remove();
+      delete Player.list[id];
+    }
+    for (let id of data.bullet) {
+      delete Bullet.list[id];
+    }
+  }
+
+  updateGame() {
+    if (!this.selfId) return;
+    this.ctx.clearRect(0, 0, 500, 500);
+    this.drawMap();
+    // console.log(Player.list);
+    for (let id in Player.list) {
+      Player.list[id].draw();
+    }
+    for (let id in Bullet.list) {
+      Bullet.list[id].draw();
+    }
+  }
+
+  drawMap() {
+    this.ctx.drawImage(this.Img.map, 0, 0, 1280, 720);
+  }
+
+  handleKeydown(event) {
+    const keyMap = {
+      d: "pressingRight",
+      s: "pressingDown",
+      a: "pressingLeft",
+      w: "pressingUp",
+      ArrowRight: "shootingRight",
+      ArrowDown: "shootingDown",
+      ArrowLeft: "shootingLeft",
+      ArrowUp: "shootingUp",
+    };
+    if (keyMap[event.key]) {
+      this.socket.emit("keyPress", { inputId: keyMap[event.key], state: true });
+    }
+  }
+
+  handleKeyup(event) {
+    const keyMap = {
+      d: "pressingRight",
+      s: "pressingDown",
+      a: "pressingLeft",
+      w: "pressingUp",
+      ArrowRight: "shootingRight",
+      ArrowDown: "shootingDown",
+      ArrowLeft: "shootingLeft",
+      ArrowUp: "shootingUp",
+    };
+    if (keyMap[event.key]) {
+      this.socket.emit("keyPress", {
+        inputId: keyMap[event.key],
+        state: false,
+      });
+    }
+  }
 }
-const imagePaths = {
-  player: "/client/img/isaac.png",
-  playerShooting: "/client/img/isaacShooting.png",
-  enemy: "/client/img/enemy.png",
-  enemyShooting: "/client/img/enemyShooting.png",
-  playerTear: "/client/img/playerTear.png",
-  enemyTear: "/client/img/enemyTear.png",
-  map: "/client/img/bg.png",
-  soulFullHeart: "/client/img/soulFullHeart.png",
-  soulHalfHeart: "/client/img/soulHalfHeart.png",
-  redFullHeart: "/client/img/redFullHeart.png",
-  redHalfHeart: "/client/img/redHalfHeart.png",
-};
-const Img = {};
-for (let key in imagePaths) {
-  Img[key] = loadImage(imagePaths[key]);
-}
 
-const ctx = document.getElementById("ctx").getContext("2d");
-ctx.font = "30px Arial";
-
-const Player = (initPack) => {
-  const self = {};
-  self.id = initPack.id;
-  self.name = initPack.name;
-  self.x = initPack.x;
-  self.y = initPack.y;
-  self.hp = initPack.hp;
-  self.hpMax = initPack.hpMax;
-  self.score = initPack.score;
-  self.isClosingEyes = initPack.isClosingEyes;
-
-  if (!scoreboard.innerHTML.includes(self.id)) {
-    scoreboard.innerHTML += `<div id=${self.id}>0 - ${self.name}</div>`;
+class Player {
+  constructor(initPack, game) {
+    this.id = initPack.id;
+    this.name = initPack.name;
+    this.x = initPack.x;
+    this.y = initPack.y;
+    this.hp = initPack.hp;
+    this.hpMax = initPack.hpMax;
+    this.score = initPack.score;
+    this.isClosingEyes = initPack.isClosingEyes;
+    this.game = game;
+    if (!game.scoreboard.innerHTML.includes(this.id)) {
+      game.scoreboard.innerHTML += `<div id=${this.id}>0 - ${this.name}</div>`;
+    }
+    Player.list[this.id] = this;
   }
 
-  self.draw = (playerModel) => {
-    for (let i = 1; i <= self.hpMax; i++) {
+  update(data) {
+    // console.log(data);
+    if (data.x !== undefined) this.x = data.x;
+    if (data.y !== undefined) this.y = data.y;
+    if (data.hp !== undefined) this.hp = data.hp;
+    if (data.name !== undefined) this.name = data.name.slice(0, 20);
+    if (data.score !== undefined) {
+      const playerScoreDiv = document.getElementById(this.id);
+      if (playerScoreDiv) {
+        playerScoreDiv.innerHTML = `${data.score} - ${this.name}`;
+      }
+      this.score = data.score;
+    }
+    if (data.isClosingEyes !== undefined)
+      this.isClosingEyes = data.isClosingEyes;
+  }
+
+  draw() {
+    console.log(this);
+
+    for (let i = 1; i <= this.hpMax; i++) {
       const fullHeartModel =
-        selfId === self.id ? Img.redFullHeart : Img.soulFullHeart;
+        this.game.selfId === this.id
+          ? this.game.Img.redFullHeart
+          : this.game.Img.soulFullHeart;
       const halfHeartModel =
-        selfId === self.id ? Img.redHalfHeart : Img.soulHalfHeart;
+        this.game.selfId === this.id
+          ? this.game.Img.redHalfHeart
+          : this.game.Img.soulHalfHeart;
 
-      if (i < self.hp) {
-        ctx.drawImage(
+      if (i < this.hp) {
+        this.game.ctx.drawImage(
           fullHeartModel,
-          self.x - 60 + (i / 2) * 30,
-          self.y - 85,
+          this.x - 60 + (i / 2) * 30,
+          this.y - 85,
           30,
           30,
         );
         i++;
-      } else if (i === self.hp)
-        ctx.drawImage(
+      } else if (i === this.hp)
+        this.game.ctx.drawImage(
           halfHeartModel,
-          self.x - 60 + (i / 2) * 30,
-          self.y - 85,
+          this.x - 60 + (i / 2) * 30,
+          this.y - 85,
           30,
           30,
         );
-      ctx.fillStyle = "white";
-      ctx.font = "30px upheaval";
-      ctx.fillText(self.name, self.x - self.name.length * 8.2, self.y - 95);
+      this.game.ctx.fillStyle = "white";
+      this.game.ctx.font = "30px upheaval";
+      this.game.ctx.fillText(
+        this.name,
+        this.x - this.name.length * 8.2,
+        this.y - 95,
+      );
     }
 
-    const width = Img.player.width / 4;
-    const height = Img.player.height / 4;
+    const width = this.game.Img.player.width / 4;
+    const height = this.game.Img.player.height / 4;
+    const playerModel =
+      this.id === this.game.selfId
+        ? this.isClosingEyes
+          ? this.game.Img.playerShooting
+          : this.game.Img.player
+        : this.isClosingEyes
+          ? this.game.Img.enemyShooting
+          : this.game.Img.enemy;
 
-    ctx.drawImage(
+    this.game.ctx.drawImage(
       playerModel,
       0,
       0,
-      Img.player.width,
-      Img.player.height,
-      self.x - width / 2,
-      self.y - height / 2,
+      this.game.Img.player.width,
+      this.game.Img.player.height,
+      this.x - width / 2,
+      this.y - height / 2,
       width,
       height,
     );
-  };
-
-  Player.list[self.id] = self;
-  return self;
-};
+  }
+}
 Player.list = {};
 
-const Bullet = (initPack) => {
-  const self = {};
-  self.id = initPack.id;
-  self.x = initPack.x;
-  self.y = initPack.y;
-  self.parent = initPack.parent;
+class Bullet {
+  constructor(initPack, game) {
+    this.id = initPack.id;
+    this.x = initPack.x;
+    this.y = initPack.y;
+    this.parent = initPack.parent;
+    this.game = game;
+    Bullet.list[this.id] = this;
+  }
 
-  self.draw = () => {
-    const width = Img.playerTear.width / 4;
-    const height = Img.playerTear.height / 4;
+  update(data) {
+    if (data.x !== undefined) this.x = data.x;
+    if (data.y !== undefined) this.y = data.y;
+  }
 
-    const tearModel = self.parent === selfId ? Img.playerTear : Img.enemyTear;
-    ctx.drawImage(
+  draw() {
+    const width = this.game.Img.playerTear.width / 4;
+    const height = this.game.Img.playerTear.height / 4;
+    const tearModel =
+      this.parent === this.game.selfId
+        ? this.game.Img.playerTear
+        : this.game.Img.enemyTear;
+    this.game.ctx.drawImage(
       tearModel,
       0,
       0,
-      Img.playerTear.width,
-      Img.playerTear.height,
-      self.x - width / 2,
-      self.y - height / 2,
+      this.game.Img.playerTear.width,
+      this.game.Img.playerTear.height,
+      this.x - width / 2,
+      this.y - height / 2,
       width,
       height,
     );
-  };
-
-  Bullet.list[self.id] = self;
-  return self;
-};
+  }
+}
 Bullet.list = {};
 
-let selfId = null;
-
-socket.on("init", (data) => {
-  if (data.selfId) selfId = data.selfId;
-  for (let i = 0; i < data.player.length; i++) {
-    Player(data.player[i]);
-  }
-  for (let i = 0; i < data.bullet.length; i++) {
-    Bullet(data.bullet[i]);
-  }
-});
-
-socket.on("update", (data) => {
-  for (let i = 0; i < data.player.length; i++) {
-    const pack = data.player[i];
-    const p = Player.list[pack.id];
-    if (p) {
-      if (pack.x !== undefined) p.x = pack.x;
-      if (pack.y !== undefined) p.y = pack.y;
-      if (pack.hp !== undefined) p.hp = pack.hp;
-      if (pack.name !== undefined) p.name = pack.name.slice(0, 20);
-      if (pack.score !== undefined) {
-        const playerScoreDiv = document.getElementById(p.id);
-        if (playerScoreDiv) {
-          playerScoreDiv.innerHTML = `${pack.score} - ${p.name}`;
-        }
-        p.score = pack.score;
-      }
-      if (pack.isClosingEyes !== undefined)
-        p.isClosingEyes = pack.isClosingEyes;
-    }
-  }
-  for (let i = 0; i < data.bullet.length; i++) {
-    const pack = data.bullet[i];
-    const b = Bullet.list[data.bullet[i].id];
-    if (b) {
-      if (pack.x !== undefined) b.x = pack.x;
-      if (pack.y !== undefined) b.y = pack.y;
-    }
-  }
-});
-socket.on("remove", (data) => {
-  for (let i = 0; i < data.player.length; i++) {
-    const playerScoreDiv = document.getElementById(data.player[i]);
-    if (playerScoreDiv) {
-      playerScoreDiv.parentNode.removeChild(playerScoreDiv);
-    }
-    delete Player.list[data.player[i]];
-  }
-  for (let i = 0; i < data.bullet.length; i++) {
-    delete Bullet.list[data.bullet[i]];
-  }
-});
-
-setInterval(() => {
-  if (!selfId) return;
-  ctx.clearRect(0, 0, 500, 500);
-  drawMap();
-  for (let i in Player.list) {
-    let playerModel = Img.player;
-    if (Player.list[i].id === selfId) {
-      playerModel = Player.list[i].isClosingEyes
-        ? Img.playerShooting
-        : Img.player;
-    } else
-      playerModel = Player.list[i].isClosingEyes
-        ? Img.enemyShooting
-        : Img.enemy;
-    Player.list[i].draw(playerModel);
-  }
-  for (let i in Bullet.list) {
-    Bullet.list[i].draw();
-  }
-}, 10);
-const drawMap = () => {
-  ctx.drawImage(Img.map, 0, 0, 1280, 720);
-};
-
-document.onkeydown = (event) => {
-  if (event.key === "d")
-    socket.emit("keyPress", { inputId: "right", state: true });
-  else if (event.key === "s")
-    socket.emit("keyPress", { inputId: "down", state: true });
-  else if (event.key === "a")
-    socket.emit("keyPress", { inputId: "left", state: true });
-  else if (event.key === "w")
-    socket.emit("keyPress", { inputId: "up", state: true });
-  else if (event.key === "ArrowRight")
-    socket.emit("keyPress", { inputId: "shootRight", state: true });
-  else if (event.key === "ArrowDown")
-    socket.emit("keyPress", { inputId: "shootDown", state: true });
-  else if (event.key === "ArrowLeft")
-    socket.emit("keyPress", { inputId: "shootLeft", state: true });
-  else if (event.key === "ArrowUp")
-    socket.emit("keyPress", { inputId: "shootUp", state: true });
-};
-document.onkeyup = (event) => {
-  if (event.key === "d")
-    socket.emit("keyPress", { inputId: "right", state: false });
-  else if (event.key === "s")
-    socket.emit("keyPress", { inputId: "down", state: false });
-  else if (event.key === "a")
-    socket.emit("keyPress", { inputId: "left", state: false });
-  else if (event.key === "w")
-    socket.emit("keyPress", { inputId: "up", state: false });
-  else if (event.key === "ArrowRight")
-    socket.emit("keyPress", { inputId: "shootRight", state: false });
-  else if (event.key === "ArrowDown")
-    socket.emit("keyPress", { inputId: "shootDown", state: false });
-  else if (event.key === "ArrowLeft")
-    socket.emit("keyPress", { inputId: "shootLeft", state: false });
-  else if (event.key === "ArrowUp")
-    socket.emit("keyPress", { inputId: "shootUp", state: false });
-};
+new GameClient();

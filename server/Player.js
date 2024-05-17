@@ -1,265 +1,216 @@
 import Entity from "./Entity.js";
 import { initPack, removePack } from "./Packs.js";
 import { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } from "./settings.js";
-export const Player = (id) => {
-  const self = Entity();
-  self.id = id;
-  self.name = "ISAAC " + Math.floor(Math.random() * 100);
-  self.pressingRight = false;
-  self.pressingLeft = false;
-  self.pressingUp = false;
-  self.pressingDown = false;
-  self.pressingAttack = false;
-  self.shootingRight = false;
-  self.shootingLeft = false;
-  self.shootingUp = false;
-  self.shootingDown = false;
-  self.mouseAngle = 0;
-  self.isAttackOnCooldown = false;
-  self.maxSpd = 5;
-  self.hp = 5;
-  self.hpMax = 5;
-  self.score = 0;
-  self.isClosingEyes = false;
 
-  const super_update = self.update;
-  self.update = () => {
-    self.updateSpeed();
-    super_update();
+// ------------------------------ PLAYER CLASS ------------------------------
 
-    if (self.pressingAttack) {
-      self.shootBullet(self.mouseAngle);
-    }
-    if (self.shootingRight) {
-      self.shootBullet(0);
-    }
-    if (self.shootingLeft) {
-      self.shootBullet(180);
-    }
-    if (self.shootingUp) {
-      self.shootBullet(270);
-    }
-    if (self.shootingDown) {
-      self.shootBullet(90);
-    }
-  };
-  self.shootBullet = (angle) => {
-    if (!self.isAttackOnCooldown) {
-      const b = Bullet(self.id, angle);
-      b.x = self.x;
-      b.y = self.y;
-      self.isAttackOnCooldown = true;
-      self.isClosingEyes = true;
-      setTimeout(() => {
-        self.isClosingEyes = false;
-      }, 300);
-      setTimeout(() => {
-        self.isAttackOnCooldown = false;
-      }, 500);
-    }
-  };
+class Player extends Entity {
+  constructor(id) {
+    super();
+    this.id = id;
+    this.name = `ISAAC ${Math.floor(Math.random() * 100)}`;
+    this.resetControls();
+    this.mouseAngle = 0;
+    this.isAttackOnCooldown = false;
+    this.maxSpd = 5;
+    this.hp = 5;
+    this.hpMax = 5;
+    this.score = 0;
+    this.isClosingEyes = false;
+  }
 
-  self.updateSpeed = () => {
-    if (self.pressingRight && self.x < GAME_WINDOW_WIDTH - 150) {
-      self.spdX = self.maxSpd;
-    } else if (self.pressingLeft && self.x > 150) {
-      self.spdX = -self.maxSpd;
-    } else {
-      self.spdX = 0;
-    }
+  resetControls() {
+    this.pressingRight = false;
+    this.pressingLeft = false;
+    this.pressingUp = false;
+    this.pressingDown = false;
+    this.pressingAttack = false;
+    this.shootingRight = false;
+    this.shootingLeft = false;
+    this.shootingUp = false;
+    this.shootingDown = false;
+  }
 
-    if (self.pressingUp && self.y > 100) {
-      self.spdY = -self.maxSpd;
-    } else if (self.pressingDown && self.y < GAME_WINDOW_HEIGHT - 170) {
-      self.spdY = self.maxSpd;
-    } else {
-      self.spdY = 0;
-    }
-  };
+  update() {
+    this.updateSpeed();
+    super.update();
 
-  self.getInitPack = () => {
+    if (this.pressingAttack) this.shootBullet(this.mouseAngle);
+    if (this.shootingRight) this.shootBullet(0);
+    if (this.shootingLeft) this.shootBullet(180);
+    if (this.shootingUp) this.shootBullet(270);
+    if (this.shootingDown) this.shootBullet(90);
+  }
+
+  shootBullet(angle) {
+    if (this.isAttackOnCooldown) return;
+
+    const b = new Bullet(this.id, angle);
+    b.x = this.x;
+    b.y = this.y;
+    this.isAttackOnCooldown = true;
+    this.isClosingEyes = true;
+
+    setTimeout(() => {
+      this.isClosingEyes = false;
+    }, 300);
+    setTimeout(() => {
+      this.isAttackOnCooldown = false;
+    }, 500);
+  }
+
+  updateSpeed() {
+    this.spdX =
+      this.pressingRight && this.x < GAME_WINDOW_WIDTH - 150
+        ? this.maxSpd
+        : this.pressingLeft && this.x > 150
+          ? -this.maxSpd
+          : 0;
+    this.spdY =
+      this.pressingUp && this.y > 100
+        ? -this.maxSpd
+        : this.pressingDown && this.y < GAME_WINDOW_HEIGHT - 170
+          ? this.maxSpd
+          : 0;
+  }
+
+  getInitPack() {
     return {
-      id: self.id,
-      x: self.x,
-      y: self.y,
-      name: self.name,
-      hp: self.hp,
-      hpMax: self.hpMax,
-      score: self.score,
-      isClosingEyes: self.isClosingEyes,
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      name: this.name,
+      hp: this.hp,
+      hpMax: this.hpMax,
+      score: this.score,
+      isClosingEyes: this.isClosingEyes,
     };
-  };
-  self.getUpdatePack = () => {
+  }
+
+  getUpdatePack() {
     return {
-      id: self.id,
-      x: self.x,
-      y: self.y,
-      name: self.name,
-      hp: self.hp,
-      score: self.score,
-      isClosingEyes: self.isClosingEyes,
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      name: this.name,
+      hp: this.hp,
+      score: this.score,
+      isClosingEyes: this.isClosingEyes,
     };
-  };
+  }
 
-  Player.list[id] = self;
+  static onConnect(socket) {
+    const player = new Player(socket.id);
+    Player.list[socket.id] = player;
 
-  initPack.player.push(self.getInitPack());
-  return self;
-};
+    socket.on("keyPress", ({ inputId, state }) => {
+      if (player[inputId] !== undefined) {
+        player[inputId] = state;
+      }
+    });
+
+    socket.emit("init", {
+      selfId: socket.id,
+      player: Player.getAllInitPack(),
+      bullet: Bullet.getAllInitPack(),
+    });
+  }
+
+  static onDisconnect(socket) {
+    delete Player.list[socket.id];
+    removePack.player.push(socket.id);
+  }
+
+  static update() {
+    return Object.values(Player.list).map((player) => {
+      player.update();
+      return player.getUpdatePack();
+    });
+  }
+
+  static getAllInitPack() {
+    return Object.values(Player.list).map((player) => player.getInitPack());
+  }
+}
 Player.list = {};
 
-Player.onConnect = (socket) => {
-  const player = Player(socket.id);
-  socket.on("keyPress", (data) => {
-    const { inputId, state } = data;
-    switch (inputId) {
-      case "left":
-        player.pressingLeft = state;
-        break;
-      case "right":
-        player.pressingRight = state;
-        break;
-      case "up":
-        player.pressingUp = state;
-        break;
-      case "down":
-        player.pressingDown = state;
-        break;
-      case "attack":
-        player.pressingAttack = state;
-        break;
-      case "mouseAngle":
-        player.mouseAngle = state;
-        break;
-      case "shootRight":
-        player.shootingRight = state;
-        break;
-      case "shootLeft":
-        player.shootingLeft = state;
-        break;
-      case "shootUp":
-        player.shootingUp = state;
-        break;
-      case "shootDown":
-        player.shootingDown = state;
-        break;
-    }
-  });
+// ------------------------------ BULLET CLASS ------------------------------
 
-  socket.emit("init", {
-    selfId: socket.id,
-    player: Player.getAllInitPack(),
-    bullet: Bullet.getAllInitPack(),
-  });
-};
+class Bullet extends Entity {
+  constructor(parent, angle) {
+    super();
+    this.id = Math.random();
+    this.spdX = Math.cos((angle * Math.PI) / 180) * 10;
+    this.spdY = Math.sin((angle * Math.PI) / 180) * 10;
+    this.parent = parent;
+    this.timer = 0;
+    this.toRemove = false;
+    Bullet.list[this.id] = this;
 
-Player.getAllInitPack = () => {
-  const players = [];
-  for (let i in Player.list) {
-    players.push(Player.list[i].getInitPack());
+    initPack.bullet.push(this.getInitPack());
   }
-  return players;
-};
 
-Player.onDisconnect = (socket) => {
-  delete Player.list[socket.id];
-  removePack.player.push(socket.id);
-};
-
-Player.update = () => {
-  const pack = [];
-  for (let i in Player.list) {
-    let player = Player.list[i];
-    player.update();
-    pack.push(player.getUpdatePack());
-  }
-  return pack;
-};
-
-// ------------------------------------ BULLET -----------------------------------
-
-export const Bullet = (parent, angle) => {
-  const self = Entity();
-  self.id = Math.random();
-  self.spdX = Math.cos((angle / 180) * Math.PI) * 10;
-  self.spdY = Math.sin((angle / 180) * Math.PI) * 10;
-  self.parent = parent;
-  self.timer = 0;
-  self.toRemove = false;
-  const super_update = self.update;
-
-  self.update = () => {
-    if (self.timer++ > 100) {
-      self.toRemove = true;
-    } else if (
-      self.x < 100 ||
-      self.x > GAME_WINDOW_WIDTH - 100 ||
-      self.y < 100 ||
-      self.y > GAME_WINDOW_HEIGHT - 100
+  update() {
+    if (
+      this.timer++ > 100 ||
+      this.x < 100 ||
+      this.x > GAME_WINDOW_WIDTH - 100 ||
+      this.y < 100 ||
+      this.y > GAME_WINDOW_HEIGHT - 100
     ) {
-      self.toRemove = true;
+      this.toRemove = true;
     }
-    super_update(7);
+    super.update();
 
-    for (let i in Player.list) {
-      let p = Player.list[i];
-      if (self.getDistance(p) < 64 && self.parent !== p.id) {
-        p.hp -= 1;
-        const shooter = Player.list[self.parent];
-        if (p.hp <= 0) {
+    for (const player of Object.values(Player.list)) {
+      if (this.getDistance(player) < 64 && this.parent !== player.id) {
+        player.hp -= 1;
+        const shooter = Player.list[this.parent];
+        if (player.hp <= 0) {
           if (shooter) shooter.score += 1;
-          p.hp = p.hpMax;
-          p.x = Math.random() * 1000 + 100;
-          p.y = Math.random() * 500 + 100;
+          player.hp = player.hpMax;
+          player.x = Math.random() * 1000 + 100;
+          player.y = Math.random() * 500 + 100;
         }
-        self.toRemove = true;
+        this.toRemove = true;
       }
     }
-  };
+  }
 
-  self.getInitPack = () => {
+  getInitPack() {
     return {
-      id: self.id,
-      x: self.x,
-      y: self.y,
-      number: self.number,
-      parent: self.parent,
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      parent: this.parent,
     };
-  };
-  self.getUpdatePack = () => {
+  }
+
+  getUpdatePack() {
     return {
-      id: self.id,
-      x: self.x,
-      y: self.y,
+      id: this.id,
+      x: this.x,
+      y: this.y,
     };
-  };
+  }
 
-  Bullet.list[self.id] = self;
+  static update() {
+    return Object.entries(Bullet.list).reduce((pack, [id, bullet]) => {
+      bullet.update();
+      if (bullet.toRemove) {
+        delete Bullet.list[id];
+        removePack.bullet.push(id);
+      } else {
+        pack.push(bullet.getUpdatePack());
+      }
+      return pack;
+    }, []);
+  }
 
-  initPack.bullet.push(self.getInitPack());
-  return self;
-};
+  static getAllInitPack() {
+    return Object.values(Bullet.list).map((bullet) => bullet.getInitPack());
+  }
+}
 Bullet.list = {};
 
-Bullet.update = () => {
-  const pack = [];
-  for (let i in Bullet.list) {
-    let bullet = Bullet.list[i];
-    bullet.update();
-    if (bullet.toRemove) {
-      delete Bullet.list[i];
-      removePack.bullet.push(bullet.id);
-    } else {
-      pack.push(bullet.getUpdatePack());
-    }
-  }
-  return pack;
-};
-
-Bullet.getAllInitPack = () => {
-  const bullets = [];
-  for (let i in Bullet.list) {
-    bullets.push(Bullet.list[i].getInitPack());
-  }
-  return bullets;
-};
+export { Player, Bullet };
