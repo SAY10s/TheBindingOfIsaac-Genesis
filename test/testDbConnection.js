@@ -4,27 +4,27 @@ const USERS = {
   test: "test",
   say10s: "say10s",
 };
-const isValidPassword = (data) => {
+export const isValidPassword = (data) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(USERS[data.username] === data.password);
     }, 10);
   });
 };
-const isUsernameTaken = (data) => {
+export const isUsernameTaken = (data) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(USERS[data.username]);
     }, 10);
   });
 };
-const addUser = (data) => {
+export const addUser = (data) => {
   setTimeout(() => {
     USERS[data.username] = data.password;
   }, 10);
 };
 
-module.exports = {
+export default {
   isValidPassword,
   isUsernameTaken,
   addUser,

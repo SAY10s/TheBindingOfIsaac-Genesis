@@ -1,8 +1,7 @@
-const Entity = require("./Entity");
-const { initPack, removePack } = require("./Packs");
-const { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } = require("./settings");
-
-const Player = (id) => {
+import Entity from "./Entity.js";
+import { initPack, removePack } from "./Packs.js";
+import { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } from "./settings.js";
+export const Player = (id) => {
   const self = Entity();
   self.id = id;
   self.name = "ISAAC " + Math.floor(Math.random() * 100);
@@ -179,7 +178,7 @@ Player.update = () => {
 
 // ------------------------------------ BULLET -----------------------------------
 
-const Bullet = (parent, angle) => {
+export const Bullet = (parent, angle) => {
   const self = Entity();
   self.id = Math.random();
   self.spdX = Math.cos((angle / 180) * Math.PI) * 10;
@@ -263,9 +262,4 @@ Bullet.getAllInitPack = () => {
     bullets.push(Bullet.list[i].getInitPack());
   }
   return bullets;
-};
-
-module.exports = {
-  Player,
-  Bullet,
 };

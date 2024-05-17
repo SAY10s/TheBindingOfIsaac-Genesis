@@ -1,5 +1,4 @@
-const { Client } = require("pg");
-
+import Client from "pg";
 const client = new Client({
   host: "db",
   port: 5432,
@@ -32,7 +31,7 @@ const isValidPassword = async (data) => {
   try {
     const res = await client.query(
       "SELECT password FROM users WHERE username = $1",
-      [data.username]
+      [data.username],
     );
     return res.rows.length > 0 && res.rows[0].password === data.password;
   } catch (err) {
@@ -44,7 +43,7 @@ const isUsernameTaken = async (data) => {
   try {
     const res = await client.query(
       "SELECT username FROM users WHERE username = $1",
-      [data.username]
+      [data.username],
     );
     return res.rows.length > 0;
   } catch (err) {
@@ -56,15 +55,9 @@ const addUser = async (data) => {
   try {
     await client.query(
       "INSERT INTO users (username, password) VALUES ($1, $2)",
-      [data.username, data.password]
+      [data.username, data.password],
     );
   } catch (err) {
     console.error(err);
   }
-};
-
-module.exports = {
-  isValidPassword,
-  isUsernameTaken,
-  addUser,
 };

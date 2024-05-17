@@ -1,7 +1,2 @@
-const initPack = { player: [], bullet: [] };
-const removePack = { player: [], bullet: [] };
-
-module.exports = {
-  initPack,
-  removePack,
-};
+export const initPack = { player: [], bullet: [] };
+export const removePack = { player: [], bullet: [] };

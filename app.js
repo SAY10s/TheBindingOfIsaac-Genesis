@@ -1,18 +1,24 @@
-const express = require("express");
-const { Player, Bullet } = require("./server/Player");
-const { initPack, removePack } = require("./server/Packs");
-const {
+import express from "express";
+import { Player, Bullet } from "./server/Player.js";
+import { initPack, removePack } from "./server/Packs.js";
+import {
   GAME_WINDOW_WIDTH,
   GAME_WINDOW_HEIGHT,
   EXPECTED_FPS,
-} = require("./server/settings");
+} from "./server/settings.js";
+import { Server } from "http";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 // ------------------------------ SERVER ------------------------------
 const app = express();
-const serv = require("http").Server(app);
+const serv = Server(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/index.html");
 });
+
 app.use("/client", express.static(__dirname + "/client"));
 serv.listen(2000);
 console.log("Server started.");
@@ -25,11 +31,11 @@ const SOCKET_LIST = {};
 //----------------------------- DB CONNECTION -----------------------------
 
 // TESTING WITHOUT DB CONNECTION
-const {
+import {
   isValidPassword,
   isUsernameTaken,
   addUser,
-} = require("./test/testDbConnection");
+} from "./test/testDbConnection.js";
 
 // TESTING WITH DB CONNECTION
 // const {
@@ -42,10 +48,10 @@ const {
 
 // ------------------------------------- SOCKET -------------------------------------
 
-const io = require("socket.io")(serv, {});
-
+import { Server as socketServer } from "socket.io";
+const io = new socketServer(serv, {});
 io.sockets.on("connection", (socket) => {
-  socket.id = Math.random();
+  let id = Math.random();
   SOCKET_LIST[socket.id] = socket;
   socket.on("signIn", async (data) => {
     Player.onConnect(socket);
@@ -62,12 +68,12 @@ io.sockets.on("connection", (socket) => {
     }
   });
   socket.on("disconnect", () => {
-    delete SOCKET_LIST[socket.id];
-    console.log("Player disconnected." + socket.id);
+    delete SOCKET_LIST[id];
+    console.log("Player disconnected." + id);
     Player.onDisconnect(socket);
   });
   socket.on("sendMsgToServer", (data) => {
-    let playerName = Player.list[socket.id].name;
+    let playerName = Player.list[id].name;
     for (let i in SOCKET_LIST) {
       SOCKET_LIST[i].emit("addToChat", playerName + ": " + data);
     }
@@ -78,8 +84,8 @@ io.sockets.on("connection", (socket) => {
     socket.emit("evalAnswer", res);
   });
   socket.on("setName", (data) => {
-    Player.list[socket.id].name = data;
-    console.log(Player.list[socket.id].name);
+    Player.list[id].name = data;
+    console.log(Player.list[id].name);
   });
 });
 

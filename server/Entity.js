@@ -24,4 +24,4 @@ const Entity = () => {
   return self;
 };
 
-module.exports = Entity;
+export default Entity;

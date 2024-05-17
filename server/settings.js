@@ -1,9 +1,3 @@
-const GAME_WINDOW_WIDTH = 1280;
-const GAME_WINDOW_HEIGHT = 720;
-const EXPECTED_FPS = 100;
-
-module.exports = {
-  GAME_WINDOW_WIDTH,
-  GAME_WINDOW_HEIGHT,
-  EXPECTED_FPS,
-};
+export const GAME_WINDOW_WIDTH = 1280;
+export const GAME_WINDOW_HEIGHT = 720;
+export const EXPECTED_FPS = 100;
