@@ -5,9 +5,10 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc",
-    "dev": "node dist/app.js",
-    "copy": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist"
+    "build-n-run": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc && node dist/app.js",
+    "start": "node dist/app.js",
+    "copy": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist",
+    "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc"
   },
   "dependencies": {
     "express": "^4.19.2",
