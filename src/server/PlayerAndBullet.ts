@@ -132,8 +132,8 @@ class Player extends Entity {
     Player.list[socket.id] = player;
     Player.list[socket.id].name = username;
     socket.on("keyPress", ({ inputId, state }) => {
-      if (player[inputId] !== undefined) {
-        player[inputId] = state;
+      if ((player as any)[inputId] !== undefined) {
+        (player as any)[inputId] = state;
       }
     });
 
@@ -144,7 +144,7 @@ class Player extends Entity {
     });
   }
 
-  static onDisconnect(socket) {
+  static onDisconnect(socket: Socket) {
     delete Player.list[socket.id];
     removePack.player.push(socket.id);
   }
@@ -164,9 +164,13 @@ class Player extends Entity {
 // ------------------------------ BULLET CLASS ------------------------------
 
 class Bullet extends Entity {
-  constructor(parent, angle) {
+  parent: string;
+  timer: number;
+  toRemove: boolean;
+  static list: { [id: string]: Bullet } = {};
+  constructor(parent: string, angle: number) {
     super();
-    this.id = Math.random();
+    this.id = Math.random().toString();
     this.spdX = Math.cos((angle * Math.PI) / 180) * 10;
     this.spdY = Math.sin((angle * Math.PI) / 180) * 10;
     this.parent = parent;
@@ -222,22 +226,32 @@ class Bullet extends Entity {
   }
 
   static update() {
-    return Object.entries(Bullet.list).reduce((pack, [id, bullet]) => {
-      bullet.update();
-      if (bullet.toRemove) {
-        delete Bullet.list[id];
-        removePack.bullet.push(id);
-      } else {
-        pack.push(bullet.getUpdatePack());
-      }
-      return pack;
-    }, []);
+    return Object.entries(Bullet.list).reduce(
+      (
+        pack: {
+          id: string;
+          x: number;
+          y: number;
+        }[],
+        [id, bullet],
+      ) => {
+        console.log("pack: ", pack);
+        bullet.update();
+        if (bullet.toRemove) {
+          delete Bullet.list[id];
+          removePack.bullet.push(id);
+        } else {
+          pack.push(bullet.getUpdatePack());
+        }
+        return pack;
+      },
+      [],
+    );
   }
 
   static getAllInitPack() {
     return Object.values(Bullet.list).map((bullet) => bullet.getInitPack());
   }
 }
-Bullet.list = {};
 
 export { Player, Bullet };

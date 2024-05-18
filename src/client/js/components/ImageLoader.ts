@@ -1,7 +1,7 @@
 export class ImageLoader {
   static loadImages() {
-    const Img = {};
-    const imagePaths = {
+    const Img: Record<string, HTMLImageElement> = {};
+    const imagePaths: Record<string, string> = {
       player: "/client/img/playerModels/isaac.png",
       playerShooting: "/client/img/playerModels/isaacShooting.png",
       enemy: "/client/img/playerModels/enemy.png",
@@ -20,7 +20,7 @@ export class ImageLoader {
     return Img;
   }
 
-  static loadImage(src) {
+  static loadImage(src: string) {
     const img = new Image();
     img.src = src;
     return img;

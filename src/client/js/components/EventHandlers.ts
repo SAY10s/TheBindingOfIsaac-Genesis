@@ -1,25 +1,64 @@
-export function setupEventListeners(gameClient) {
-  document
-    .querySelector("#signDiv-signIn")
-    .addEventListener("click", () => gameClient.signIn());
-  document
-    .querySelector("#signDiv-signUp")
-    .addEventListener("click", () => gameClient.signUp());
+import GameClient from "./GameClient.js";
 
-  gameClient.socket.on("signInResponse", (data) =>
+export function setupEventListeners(gameClient: GameClient) {
+  const signInButton = document.querySelector(
+    "#signDiv-signIn",
+  ) as HTMLButtonElement;
+  const signUpButton = document.querySelector(
+    "#signDiv-signUp",
+  ) as HTMLButtonElement;
+  signInButton.addEventListener("click", () => gameClient.signIn());
+  signUpButton.addEventListener("click", () => gameClient.signUp());
+
+  gameClient.socket.on("signInResponse", (data: { success: boolean }) =>
     gameClient.handleSignInResponse(data),
   );
-  gameClient.socket.on("signUpResponse", (data) =>
+  gameClient.socket.on("signUpResponse", (data: { success: boolean }) =>
     gameClient.handleSignUpResponse(data),
   );
-  gameClient.socket.on("addToChat", (data) => gameClient.addToChat(data));
-  gameClient.socket.on("evalAnswer", (data) => console.log(data));
-  gameClient.socket.on("init", (data) => gameClient.handleInit(data));
-  gameClient.socket.on("update", (data) => gameClient.handleUpdate(data));
+  gameClient.socket.on("addToChat", (data: string) =>
+    gameClient.addToChat(data),
+  );
+  gameClient.socket.on("evalAnswer", (data: string) => console.log(data));
+  gameClient.socket.on(
+    "init",
+    (data: {
+      selfId: string | null;
+      player: {
+        hp: number;
+        hpMax: number;
+        id: string;
+        isClosingEyes: false;
+        name: string;
+        score: number;
+        x: number;
+        y: number;
+      }[];
+      bullet: { id: string; parent: string; x: number; y: number }[];
+    }) => gameClient.handleInit(data),
+  );
+  gameClient.socket.on(
+    "update",
+    (data: {
+      selfId: string | null;
+      player: {
+        hp: number;
+        id: string;
+        isClosingEyes: false;
+        name: string;
+        score: number;
+        x: number;
+        y: number;
+      }[];
+      bullet: { id: string; x: number; y: number }[];
+    }) => gameClient.handleUpdate(data),
+  );
   gameClient.socket.on("remove", (data) => gameClient.handleRemove(data));
 
-  document.getElementById("chat-form").onsubmit = (event) =>
-    gameClient.handleChatSubmit(event);
+  const chatForm = document.getElementById("chat-form") as HTMLFormElement;
+  chatForm.addEventListener("submit", (event) =>
+    gameClient.handleChatSubmit(event),
+  );
 
   document.onkeydown = (event) => gameClient.handleKeyEvent(event, "down");
   document.onkeyup = (event) => gameClient.handleKeyEvent(event, "up");

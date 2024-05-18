@@ -1,24 +1,25 @@
-const USERS = {
-  // username:password
+const USERS: Record<string, string> = {
   admin: "admin",
   test: "test",
-  say10s: "say10s",
 };
-export const isValidPassword = (data) => {
+export const isValidPassword = (data: {
+  username: string;
+  password: string;
+}) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(USERS[data.username] === data.password);
     }, 10);
   });
 };
-export const isUsernameTaken = (data) => {
+export const isUsernameTaken = (data: { username: string }) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(USERS[data.username]);
     }, 10);
   });
 };
-export const addUser = (data) => {
+export const addUser = (data: { username: string; password: string }) => {
   setTimeout(() => {
     USERS[data.username] = data.password;
   }, 10);

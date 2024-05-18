@@ -1,5 +1,16 @@
+import GameClient from "./GameClient.js";
+
 export class Bullet {
-  constructor(initPack, game) {
+  id: string;
+  x: number;
+  y: number;
+  parent: string;
+  game: GameClient;
+  static list: { [key: string]: Bullet } = {};
+  constructor(
+    initPack: { id: string; parent: string; x: number; y: number },
+    game: GameClient,
+  ) {
     this.id = initPack.id;
     this.x = initPack.x;
     this.y = initPack.y;
@@ -8,7 +19,7 @@ export class Bullet {
     Bullet.list[this.id] = this;
   }
 
-  update(data) {
+  update(data: { x?: number; y?: number }) {
     if (data.x !== undefined) this.x = data.x;
     if (data.y !== undefined) this.y = data.y;
   }
@@ -33,4 +44,3 @@ export class Bullet {
     );
   }
 }
-Bullet.list = {};

@@ -1,4 +1,4 @@
-import Client from "pg";
+import { Client } from "pg";
 const client = new Client({
   host: "db",
   port: 5432,
@@ -7,7 +7,7 @@ const client = new Client({
   database: "postgres",
 });
 
-client.connect((err) => {
+client.connect((err: Error) => {
   if (err) {
     console.error("Connection error", err.stack);
   } else {
@@ -27,7 +27,10 @@ getUsers()
   .then((users) => console.log("Users:" + users))
   .catch((err) => console.error(err));
 
-const isValidPassword = async (data) => {
+const isValidPassword = async (data: {
+  username: string;
+  password: string;
+}) => {
   try {
     const res = await client.query(
       "SELECT password FROM users WHERE username = $1",
@@ -39,7 +42,7 @@ const isValidPassword = async (data) => {
   }
 };
 
-const isUsernameTaken = async (data) => {
+const isUsernameTaken = async (data: { username: string }) => {
   try {
     const res = await client.query(
       "SELECT username FROM users WHERE username = $1",
@@ -51,7 +54,7 @@ const isUsernameTaken = async (data) => {
   }
 };
 
-const addUser = async (data) => {
+const addUser = async (data: { username: string; password: string }) => {
   try {
     await client.query(
       "INSERT INTO users (username, password) VALUES ($1, $2)",

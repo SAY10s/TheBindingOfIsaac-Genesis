@@ -1,5 +1,31 @@
+import GameClient from "./GameClient.js";
+
 export class Player {
-  constructor(initPack, game) {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  hp: number;
+  hpMax: number;
+  score: number;
+  isClosingEyes: boolean;
+  game: GameClient;
+  static list: { [key: string]: Player } = {};
+
+  constructor(
+    initPack: {
+      hp: number;
+      //FIXME: hpMax is hardcoded to 5
+      // hpMax: number;
+      id: string;
+      isClosingEyes: false;
+      name: string;
+      score: number;
+      x: number;
+      y: number;
+    },
+    game: GameClient,
+  ) {
     this.id = initPack.id;
     this.name = initPack.name;
     this.x = initPack.x;
@@ -15,11 +41,18 @@ export class Player {
     Player.list[this.id] = this;
   }
 
-  update(data) {
+  update(data: {
+    hp: number;
+    id: string;
+    isClosingEyes: false;
+    name: string;
+    score: number;
+    x: number;
+    y: number;
+  }) {
     if (data.x !== undefined) this.x = data.x;
     if (data.y !== undefined) this.y = data.y;
     if (data.hp !== undefined) this.hp = data.hp;
-    if (data.hpMax !== undefined) this.hpMax = data.hpMax;
     if (data.name !== undefined) this.name = data.name.slice(0, 20);
     if (data.score !== undefined) {
       const playerScoreDiv = document.getElementById(this.id);
@@ -92,4 +125,3 @@ export class Player {
     );
   }
 }
-Player.list = {};

@@ -4,12 +4,24 @@ import { Player } from "./Player.js";
 import { Bullet } from "./Bullet.js";
 
 class GameClient {
+  socket: any;
+  selfId: string | null;
+  //FIXME: change type
+  Img: any;
+  ctx: CanvasRenderingContext2D;
+  scoreboard: HTMLElement;
   constructor() {
+    // @ts-ignore it's imported in index.html
     this.socket = io();
+
     this.selfId = null;
     this.Img = {};
-    this.ctx = document.getElementById("ctx").getContext("2d");
-    this.scoreboard = document.getElementById("scoreboard");
+    let canvas: HTMLCanvasElement = document.getElementById(
+      "ctx",
+    )! as HTMLCanvasElement;
+    // @ts-ignore FIXME: change type (it says that it might be null, even tho i used "!" above)
+    this.ctx = canvas.getContext("2d");
+    this.scoreboard = document.getElementById("scoreboard")!;
     this.init();
     setupEventListeners(this);
   }
@@ -20,41 +32,63 @@ class GameClient {
   }
 
   signIn() {
-    const username = document.getElementById("signDiv-username").value;
-    const password = document.getElementById("signDiv-password").value;
+    const usernameInput = document.getElementById(
+      "signDiv-username",
+    ) as HTMLInputElement;
+    const passwordInput = document.getElementById(
+      "signDiv-password",
+    ) as HTMLInputElement;
+    const username = usernameInput?.value;
+    const password = passwordInput?.value;
     this.socket.emit("signIn", { username, password });
   }
 
   signUp() {
-    const username = document.getElementById("signDiv-username").value;
-    const password = document.getElementById("signDiv-password").value;
+    const usernameInput = document.getElementById(
+      "signDiv-username",
+    ) as HTMLInputElement;
+    const passwordInput = document.getElementById(
+      "signDiv-password",
+    ) as HTMLInputElement;
+    const username = usernameInput?.value;
+    const password = passwordInput?.value;
     this.socket.emit("signUp", { username, password });
   }
 
-  handleSignInResponse(data) {
+  handleSignInResponse(data: { success: boolean }) {
+    const usernameInput = document.getElementById(
+      "signDiv-username",
+    ) as HTMLInputElement;
+    const passwordInput = document.getElementById(
+      "signDiv-password",
+    ) as HTMLInputElement;
+    const signDiv = document.querySelector(".signDiv") as HTMLElement;
+    const gameDiv = document.querySelector("#gameDiv") as HTMLElement;
+    const backgroundMusic = document.querySelector("#bgm") as HTMLAudioElement;
     if (data.success) {
-      document.querySelector(".signDiv").style.display = "none";
-      document.querySelector("#gameDiv").style.display = "inline-block";
-      document.querySelector("#bgm").play();
+      signDiv.style.display = "none";
+      gameDiv.style.display = "inline-block";
+
+      backgroundMusic.play();
     } else {
-      document.querySelector("#signDiv-username").value = "";
-      document.querySelector("#signDiv-password").value = "";
+      usernameInput.value = "";
+      passwordInput.value = "";
     }
   }
 
-  handleSignUpResponse(data) {
+  handleSignUpResponse(data: { success: boolean }) {
     alert(data.success ? "Sign up successful." : "Sign up unsuccessful.");
   }
 
-  addToChat(data) {
-    const chatText = document.getElementById("chat-text");
+  addToChat(data: string) {
+    const chatText = document.getElementById("chat-text") as HTMLDivElement;
     chatText.innerHTML += `<div>${data}</div>`;
     chatText.scrollTop = chatText.scrollHeight;
   }
 
-  handleChatSubmit(event) {
+  handleChatSubmit(event: Event) {
     event.preventDefault();
-    const chatInput = document.getElementById("chat-input");
+    const chatInput = document.getElementById("chat-input") as HTMLInputElement;
     if (chatInput.value[0] === "//") {
       this.socket.emit("evalServer", chatInput.value.slice(1));
     } else if (chatInput.value.slice(0, 8).toLowerCase() === "/setname") {
@@ -65,7 +99,20 @@ class GameClient {
     chatInput.value = "";
   }
 
-  handleInit(data) {
+  handleInit(data: {
+    selfId: string | null;
+    player: {
+      hp: number;
+      hpMax: number;
+      id: string;
+      isClosingEyes: false;
+      name: string;
+      score: number;
+      x: number;
+      y: number;
+    }[];
+    bullet: { id: string; parent: string; x: number; y: number }[];
+  }) {
     if (data.selfId) this.selfId = data.selfId;
     for (let playerData of data.player) {
       new Player(playerData, this);
@@ -75,7 +122,19 @@ class GameClient {
     }
   }
 
-  handleUpdate(data) {
+  handleUpdate(data: {
+    selfId: string | null;
+    player: {
+      hp: number;
+      id: string;
+      isClosingEyes: false;
+      name: string;
+      score: number;
+      x: number;
+      y: number;
+    }[];
+    bullet: { id: string; x: number; y: number }[];
+  }) {
     for (let pack of data.player) {
       const player = Player.list[pack.id] || new Player(pack, this);
       if (player) player.update(pack);
@@ -87,6 +146,7 @@ class GameClient {
   }
 
   handleRemove(data) {
+    console.log(data);
     for (let id of data.player) {
       const playerScoreDiv = document.getElementById(id);
       if (playerScoreDiv) playerScoreDiv.remove();
