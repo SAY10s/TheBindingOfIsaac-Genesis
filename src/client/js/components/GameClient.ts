@@ -2,6 +2,12 @@ import { ImageLoader } from "./ImageLoader.js";
 import { setupEventListeners } from "./EventHandlers.js";
 import { Player } from "./Player.js";
 import { Bullet } from "./Bullet.js";
+import { soundManager } from "./SoundManager.js";
+
+soundManager.addSound("newRun", "/client/sounds/newRun.mp3");
+soundManager.addSound("mainTheme", "/client/sounds/ost/mainTheme.mp3");
+
+// soundManager.playSound("mainTheme");
 
 class GameClient {
   socket: any;
@@ -64,12 +70,12 @@ class GameClient {
     ) as HTMLInputElement;
     const signDiv = document.querySelector(".signDiv") as HTMLElement;
     const gameDiv = document.querySelector("#gameDiv") as HTMLElement;
-    const backgroundMusic = document.querySelector("#bgm") as HTMLAudioElement;
     if (data.success) {
       signDiv.style.display = "none";
       gameDiv.style.display = "inline-block";
 
-      backgroundMusic.play();
+      soundManager.stopSound("mainTheme");
+      soundManager.playSound("newRun");
     } else {
       usernameInput.value = "";
       passwordInput.value = "";

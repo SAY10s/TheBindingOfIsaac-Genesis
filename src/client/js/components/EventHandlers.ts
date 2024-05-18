@@ -1,6 +1,17 @@
 import GameClient from "./GameClient.js";
+import { soundManager } from "./SoundManager.js";
 
 export function setupEventListeners(gameClient: GameClient) {
+  const playGameButton = document.querySelector(
+    "#playGame",
+  ) as HTMLButtonElement;
+  const dialogBox = document.querySelector("#dialogBox") as HTMLDivElement;
+
+  playGameButton.addEventListener("click", () => {
+    dialogBox.style.display = "none";
+    soundManager.playSound("mainTheme");
+  });
+
   const signInButton = document.querySelector(
     "#signDiv-signIn",
   ) as HTMLButtonElement;

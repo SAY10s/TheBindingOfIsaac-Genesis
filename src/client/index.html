@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="/client/style.css" />
   </head>
   <body>
+    <div id="dialogBox">
+      <h1>The Binding of isaac</h1>
+      <h2>Genesis</h2>
+      <button id="playGame">Play</button>
+    </div>
+    <!--  SIGN IN-->
     <div class="signDiv">
       <input
         type="text"
@@ -23,9 +29,8 @@
       <button id="signDiv-signIn">Sign in</button>
       <button id="signDiv-signUp">Sign up</button>
     </div>
-    <audio id="bgm" preload="auto">
-      <source src="/client/sounds/newRun.mp3" type="audio/mpeg" />
-    </audio>
+
+    <!--    GAME -->
     <div id="gameDiv" style="display: none">
       <h1>TBOI: Genesis</h1>
       <div class="canvasWrapper">
@@ -33,13 +38,13 @@
         <canvas id="ctx" width="1280" height="720"></canvas>
       </div>
 
+      <!-- CHAT -->
       <div id="chat-text">
         <div>
           Type <span style="color: red">/setName [your name]</span> to set your
           nickname
         </div>
       </div>
-
       <form id="chat-form">
         <input
           type="text"

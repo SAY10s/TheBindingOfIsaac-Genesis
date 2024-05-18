@@ -16,6 +16,31 @@
 #signDiv-signUp {
   background-color: saddlebrown;
 }
+#dialogBox {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1b0303;
+  color: white;
+}
+#dialogBox button {
+  background-color: saddlebrown;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+#dialogBox h2 {
+  font-size: 4rem;
+  margin: 3rem;
+}
 body {
   display: flex;
   flex-direction: column;

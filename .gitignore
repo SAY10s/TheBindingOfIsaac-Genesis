@@ -1,2 +1,4 @@
 /node_modules
 /dist
+/src/client/style.css
+/src/client/style.css.map
