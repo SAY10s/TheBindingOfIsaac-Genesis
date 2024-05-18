@@ -1,4 +1,9 @@
 class Entity {
+  x: number;
+  y: number;
+  spdX: number;
+  spdY: number;
+  id: string;
   constructor() {
     this.x = 250;
     this.y = 250;
@@ -11,7 +16,7 @@ class Entity {
     this.updatePosition(maxSpeed);
   }
 
-  updatePosition(maxSpeed) {
+  updatePosition(maxSpeed: number) {
     const speed = Math.hypot(this.spdX, this.spdY);
     if (speed > 0) {
       const scale = maxSpeed / speed;
@@ -20,7 +25,7 @@ class Entity {
     }
   }
 
-  getDistance(pt) {
+  getDistance(pt: { x: number; y: number }) {
     return Math.hypot(this.x - pt.x, this.y - pt.y);
   }
 }

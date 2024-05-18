@@ -1,15 +1,34 @@
 import Entity from "./Entity.js";
 import { initPack, removePack } from "./Packs.js";
 import { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } from "./settings.js";
+import { Socket } from "socket.io";
 
 // ------------------------------ PLAYER CLASS ------------------------------
 
 class Player extends Entity {
+  name: string;
+  pressingRight: boolean;
+  pressingLeft: boolean;
+  pressingUp: boolean;
+  pressingDown: boolean;
+  pressingAttack: boolean;
+  shootingRight: boolean;
+  shootingLeft: boolean;
+  shootingUp: boolean;
+  shootingDown: boolean;
+  mouseAngle: number;
+  isAttackOnCooldown: boolean;
+  maxSpd: number;
+  hp: number;
+  hpMax: number;
+  score: number;
+  isClosingEyes: boolean;
+
+  static list: { [id: string]: Player } = {};
   constructor(id: string) {
     super();
     this.id = id;
     this.name = `ISAAC ${Math.floor(Math.random() * 100)}`;
-    this.resetControls();
     this.mouseAngle = 0;
     this.isAttackOnCooldown = false;
     this.maxSpd = 5;
@@ -17,6 +36,15 @@ class Player extends Entity {
     this.hpMax = 5;
     this.score = 0;
     this.isClosingEyes = false;
+    this.pressingRight = false;
+    this.pressingLeft = false;
+    this.pressingUp = false;
+    this.pressingDown = false;
+    this.pressingAttack = false;
+    this.shootingRight = false;
+    this.shootingLeft = false;
+    this.shootingUp = false;
+    this.shootingDown = false;
   }
 
   resetControls() {
@@ -42,7 +70,7 @@ class Player extends Entity {
     if (this.shootingDown) this.shootBullet(90);
   }
 
-  shootBullet(angle) {
+  shootBullet(angle: number) {
     if (this.isAttackOnCooldown) return;
 
     const b = new Bullet(this.id, angle);
@@ -99,7 +127,7 @@ class Player extends Entity {
     };
   }
 
-  static onConnect(socket, username) {
+  static onConnect(socket: Socket, username: string) {
     const player = new Player(socket.id);
     Player.list[socket.id] = player;
     Player.list[socket.id].name = username;
@@ -132,7 +160,6 @@ class Player extends Entity {
     return Object.values(Player.list).map((player) => player.getInitPack());
   }
 }
-Player.list = {};
 
 // ------------------------------ BULLET CLASS ------------------------------
 
