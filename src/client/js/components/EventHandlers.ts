@@ -53,7 +53,11 @@ export function setupEventListeners(gameClient: GameClient) {
       bullet: { id: string; x: number; y: number }[];
     }) => gameClient.handleUpdate(data),
   );
-  gameClient.socket.on("remove", (data) => gameClient.handleRemove(data));
+  gameClient.socket.on(
+    "remove",
+    (data: { player: string[]; bullet: string[] }) =>
+      gameClient.handleRemove(data),
+  );
 
   const chatForm = document.getElementById("chat-form") as HTMLFormElement;
   chatForm.addEventListener("submit", (event) =>

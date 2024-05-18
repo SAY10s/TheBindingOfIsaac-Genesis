@@ -145,8 +145,7 @@ class GameClient {
     }
   }
 
-  handleRemove(data) {
-    console.log(data);
+  handleRemove(data: { player: string[]; bullet: string[] }) {
     for (let id of data.player) {
       const playerScoreDiv = document.getElementById(id);
       if (playerScoreDiv) playerScoreDiv.remove();
@@ -173,8 +172,8 @@ class GameClient {
     this.ctx.drawImage(this.Img.map, 0, 0, 1280, 720);
   }
 
-  handleKeyEvent(event, type) {
-    const keyMap = {
+  handleKeyEvent(event: KeyboardEvent, type: string) {
+    const keyMap: Record<string, string> = {
       d: "pressingRight",
       s: "pressingDown",
       a: "pressingLeft",

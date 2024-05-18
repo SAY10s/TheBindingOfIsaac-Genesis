@@ -235,7 +235,6 @@ class Bullet extends Entity {
         }[],
         [id, bullet],
       ) => {
-        console.log("pack: ", pack);
         bullet.update();
         if (bullet.toRemove) {
           delete Bullet.list[id];
