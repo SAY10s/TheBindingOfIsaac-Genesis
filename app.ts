@@ -1,7 +1,7 @@
 import express from "express";
-import { PlayerAndBullet, Bullet } from "./server/PlayerAndBullet.js";
-import { initPack, removePack } from "./server/Packs.js";
-import { EXPECTED_FPS } from "./server/settings.js";
+import { PlayerAndBullet, Bullet } from "./src/server/PlayerAndBullet.js";
+import { initPack, removePack } from "./src/server/Packs.js";
+import { EXPECTED_FPS } from "./src/server/settings.js";
 import { Server as HttpServer } from "http";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -14,7 +14,7 @@ import {
 
 // ------------------------------ SERVER SETUP ------------------------------
 const app = express();
-const server = HttpServer(app);
+const server = new HttpServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
