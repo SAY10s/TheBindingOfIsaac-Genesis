@@ -226,8 +226,7 @@ class Player {
   }
 
   draw() {
-    console.log(this);
-
+    console.log(this); //there's no hpMax on one of them, lol?
     for (let i = 1; i <= this.hpMax; i++) {
       const fullHeartModel =
         this.game.selfId === this.id
@@ -255,15 +254,14 @@ class Player {
           30,
           30,
         );
-      this.game.ctx.fillStyle = "white";
-      this.game.ctx.font = "30px upheaval";
-      this.game.ctx.fillText(
-        this.name,
-        this.x - this.name.length * 8.2,
-        this.y - 95,
-      );
     }
-
+    this.game.ctx.fillStyle = "white";
+    this.game.ctx.font = "30px upheaval";
+    this.game.ctx.fillText(
+      this.name,
+      this.x - this.name.length * 8.2,
+      this.y - 95,
+    );
     const width = this.game.Img.player.width / 4;
     const height = this.game.Img.player.height / 4;
     const playerModel =
