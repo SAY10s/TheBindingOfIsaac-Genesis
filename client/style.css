@@ -10,6 +10,12 @@
   font-family: "upheaval", sans-serif;
   color: white;
 }
+#signDiv-username,
+#signDiv-password,
+#signDiv-signIn,
+#signDiv-signUp {
+  background-color: saddlebrown;
+}
 body {
   display: flex;
   flex-direction: column;

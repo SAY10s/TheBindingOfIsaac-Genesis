@@ -40,8 +40,12 @@ class GameClient {
   }
 
   setupEventListeners() {
-    document.querySelector("#signDiv-signIn").onclick = () => this.signIn();
-    document.querySelector("#signDiv-signUp").onclick = () => this.signUp();
+    document
+      .querySelector("#signDiv-signIn")
+      .addEventListener("click", () => this.signIn());
+    document
+      .querySelector("#signDiv-signUp")
+      .addEventListener("click", () => this.signUp());
     this.socket.on("signInResponse", (data) => this.handleSignInResponse(data));
     this.socket.on("signUpResponse", (data) => this.handleSignUpResponse(data));
     this.socket.on("addToChat", (data) => this.addToChat(data));
@@ -52,8 +56,8 @@ class GameClient {
     document.getElementById("chat-form").onsubmit = (event) =>
       this.handleChatSubmit(event);
 
-    document.onkeydown = (event) => this.handleKeydown(event);
-    document.onkeyup = (event) => this.handleKeyup(event);
+    document.onkeydown = (event) => this.handleKeyEvent(event, "down");
+    document.onkeyup = (event) => this.handleKeyEvent(event, "up");
 
     this.socket.emit("signIn", {
       username: "test",
@@ -62,6 +66,7 @@ class GameClient {
   }
 
   signIn() {
+    console.log("!");
     const username = document.getElementById("signDiv-username").value;
     const password = document.getElementById("signDiv-password").value;
     this.socket.emit("signIn", { username, password });
@@ -76,10 +81,10 @@ class GameClient {
   handleSignInResponse(data) {
     if (data.success) {
       document.querySelector(".signDiv").style.display = "none";
-      document.getElementById("gameDiv").style.display = "inline-block";
+      document.querySelector("#gameDiv").style.display = "inline-block";
     } else {
-      document.getElementById("signDiv-username").value = "";
-      document.getElementById("signDiv-password").value = "";
+      document.querySelector("#signDiv-username").value = "";
+      document.querySelector("#signDiv-password").value = "";
     }
   }
 
@@ -154,23 +159,7 @@ class GameClient {
     this.ctx.drawImage(this.Img.map, 0, 0, 1280, 720);
   }
 
-  handleKeydown(event) {
-    const keyMap = {
-      d: "pressingRight",
-      s: "pressingDown",
-      a: "pressingLeft",
-      w: "pressingUp",
-      ArrowRight: "shootingRight",
-      ArrowDown: "shootingDown",
-      ArrowLeft: "shootingLeft",
-      ArrowUp: "shootingUp",
-    };
-    if (keyMap[event.key]) {
-      this.socket.emit("keyPress", { inputId: keyMap[event.key], state: true });
-    }
-  }
-
-  handleKeyup(event) {
+  handleKeyEvent(event, type) {
     const keyMap = {
       d: "pressingRight",
       s: "pressingDown",
@@ -184,7 +173,7 @@ class GameClient {
     if (keyMap[event.key]) {
       this.socket.emit("keyPress", {
         inputId: keyMap[event.key],
-        state: false,
+        state: type !== "up",
       });
     }
   }

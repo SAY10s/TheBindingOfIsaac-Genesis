@@ -99,10 +99,10 @@ class Player extends Entity {
     };
   }
 
-  static onConnect(socket) {
+  static onConnect(socket, username) {
     const player = new Player(socket.id);
     Player.list[socket.id] = player;
-
+    Player.list[socket.id].name = username;
     socket.on("keyPress", ({ inputId, state }) => {
       if (player[inputId] !== undefined) {
         player[inputId] = state;

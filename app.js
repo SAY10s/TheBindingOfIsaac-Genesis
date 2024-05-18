@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
   socket.on("signIn", async (data) => {
     const isValid = await isValidPassword(data);
     socket.emit("signInResponse", { success: isValid });
-    if (isValid) Player.onConnect(socket);
+    if (isValid) Player.onConnect(socket, data.username);
   });
 
   socket.on("signUp", async (data) => {
