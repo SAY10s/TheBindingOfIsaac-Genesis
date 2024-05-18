@@ -5,9 +5,9 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "dev": "nodemon dist/app.js"
+    "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc",
+    "dev": "node dist/app.js",
+    "copy": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "copyfiles": "^2.4.1",
     "typescript": "^5.4.5"
   }
 }
