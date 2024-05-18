@@ -1,7 +1,7 @@
 import express from "express";
-import { PlayerAndBullet, Bullet } from "./src/server/PlayerAndBullet.js";
-import { initPack, removePack } from "./src/server/Packs.js";
-import { EXPECTED_FPS } from "./src/server/settings.js";
+import { PlayerAndBullet, Bullet } from "./server/PlayerAndBullet.js";
+import { initPack, removePack } from "./server/Packs.js";
+import { EXPECTED_FPS } from "./server/settings.js";
 import { Server as HttpServer } from "http";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -10,7 +10,7 @@ import {
   isValidPassword,
   isUsernameTaken,
   addUser,
-} from "./test/testDbConnection.js";
+} from "../test/testDbConnection.js";
 
 // ------------------------------ SERVER SETUP ------------------------------
 const app = express();
