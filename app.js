@@ -1,5 +1,5 @@
 import express from "express";
-import { Player, Bullet } from "./server/Player.js";
+import { PlayerAndBullet, Bullet } from "./server/PlayerAndBullet.js";
 import { initPack, removePack } from "./server/Packs.js";
 import { EXPECTED_FPS } from "./server/settings.js";
 import { Server as HttpServer } from "http";
@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
   socket.on("signIn", async (data) => {
     const isValid = await isValidPassword(data);
     socket.emit("signInResponse", { success: isValid });
-    if (isValid) Player.onConnect(socket, data.username);
+    if (isValid) PlayerAndBullet.onConnect(socket, data.username);
   });
 
   socket.on("signUp", async (data) => {
@@ -58,12 +58,12 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete SOCKET_LIST[id];
-    Player.onDisconnect(socket);
+    PlayerAndBullet.onDisconnect(socket);
     console.log(`Player disconnected: ${id}`);
   });
 
   socket.on("sendMsgToServer", (data) => {
-    const playerName = Player.list[id]?.name || "Unknown";
+    const playerName = PlayerAndBullet.list[id]?.name || "Unknown";
     for (const socketId in SOCKET_LIST) {
       SOCKET_LIST[socketId].emit("addToChat", `${playerName}: ${data}`);
     }
@@ -81,9 +81,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("setName", (data) => {
-    if (Player.list[id]) {
-      Player.list[id].name = data;
-      console.log(`Player name set to: ${Player.list[id].name}`);
+    if (PlayerAndBullet.list[id]) {
+      PlayerAndBullet.list[id].name = data;
+      console.log(`Player name set to: ${PlayerAndBullet.list[id].name}`);
     }
   });
 });
@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
 // ------------------------------ GAME LOOP ------------------------------
 setInterval(() => {
   const pack = {
-    player: Player.update(),
+    player: PlayerAndBullet.update(),
     bullet: Bullet.update(),
   };
 
