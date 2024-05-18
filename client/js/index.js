@@ -142,7 +142,6 @@ class GameClient {
     if (!this.selfId) return;
     this.ctx.clearRect(0, 0, 500, 500);
     this.drawMap();
-    // console.log(Player.list);
     for (let id in Player.list) {
       Player.list[id].draw();
     }
@@ -198,7 +197,9 @@ class Player {
     this.x = initPack.x;
     this.y = initPack.y;
     this.hp = initPack.hp;
-    this.hpMax = initPack.hpMax;
+    //FIXME: this.hpMax is not being set correctly. Now it's just a placeholder.
+    // this.hpMax = initPack.hpMax;
+    this.hpMax = 5;
     this.score = initPack.score;
     this.isClosingEyes = initPack.isClosingEyes;
     this.game = game;
@@ -209,10 +210,10 @@ class Player {
   }
 
   update(data) {
-    // console.log(data);
     if (data.x !== undefined) this.x = data.x;
     if (data.y !== undefined) this.y = data.y;
     if (data.hp !== undefined) this.hp = data.hp;
+    if (data.hpMax !== undefined) this.hpMax = data.hpMax;
     if (data.name !== undefined) this.name = data.name.slice(0, 20);
     if (data.score !== undefined) {
       const playerScoreDiv = document.getElementById(this.id);
@@ -226,7 +227,6 @@ class Player {
   }
 
   draw() {
-    console.log(this); //there's no hpMax on one of them, lol?
     for (let i = 1; i <= this.hpMax; i++) {
       const fullHeartModel =
         this.game.selfId === this.id
