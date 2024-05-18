@@ -160,7 +160,7 @@ class Bullet extends Entity {
     ) {
       this.toRemove = true;
     }
-    super.update();
+    super.update(7);
 
     for (const player of Object.values(Player.list)) {
       if (this.getDistance(player) < 64 && this.parent !== player.id) {
