@@ -35,6 +35,7 @@ class GameClient {
     if (data.success) {
       document.querySelector(".signDiv").style.display = "none";
       document.querySelector("#gameDiv").style.display = "inline-block";
+      document.querySelector("#bgm").play();
     } else {
       document.querySelector("#signDiv-username").value = "";
       document.querySelector("#signDiv-password").value = "";

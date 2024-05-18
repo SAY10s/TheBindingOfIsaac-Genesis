@@ -24,8 +24,8 @@ export function setupEventListeners(gameClient) {
   document.onkeydown = (event) => gameClient.handleKeyEvent(event, "down");
   document.onkeyup = (event) => gameClient.handleKeyEvent(event, "up");
 
-  gameClient.socket.emit("signIn", {
-    username: "test",
-    password: "test",
-  });
+  // gameClient.socket.emit("signIn", {
+  //   username: "test",
+  //   password: "test",
+  // });
 }
