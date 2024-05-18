@@ -1,16 +1,16 @@
 import express from "express";
-import { PlayerAndBullet, Bullet } from "./server/PlayerAndBullet.js";
+import { Player, Bullet } from "./server/PlayerAndBullet.js";
 import { initPack, removePack } from "./server/Packs.js";
 import { EXPECTED_FPS } from "./server/settings.js";
 import { Server as HttpServer } from "http";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { Server as SocketServer } from "socket.io";
+import { Server as SocketServer, Socket } from "socket.io";
 import {
   isValidPassword,
   isUsernameTaken,
   addUser,
-} from "../test/testDbConnection.js";
+} from "./server/test/testDbConnection.js";
 
 // ------------------------------ SERVER SETUP ------------------------------
 const app = express();
@@ -20,8 +20,7 @@ const __dirname = dirname(__filename);
 
 const PORT = 2000;
 const DEBUG = true;
-const SOCKET_LIST = {};
-
+const SOCKET_LIST: { [id: string]: Socket } = {};
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "/client/index.html"));
 });
@@ -43,7 +42,7 @@ io.on("connection", (socket) => {
   socket.on("signIn", async (data) => {
     const isValid = await isValidPassword(data);
     socket.emit("signInResponse", { success: isValid });
-    if (isValid) PlayerAndBullet.onConnect(socket, data.username);
+    if (isValid) Player.onConnect(socket, data.username);
   });
 
   socket.on("signUp", async (data) => {
@@ -58,12 +57,12 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete SOCKET_LIST[id];
-    PlayerAndBullet.onDisconnect(socket);
+    Player.onDisconnect(socket);
     console.log(`Player disconnected: ${id}`);
   });
 
   socket.on("sendMsgToServer", (data) => {
-    const playerName = PlayerAndBullet.list[id]?.name || "Unknown";
+    const playerName = Player.list[id]?.name || "Unknown";
     for (const socketId in SOCKET_LIST) {
       SOCKET_LIST[socketId].emit("addToChat", `${playerName}: ${data}`);
     }
@@ -74,16 +73,16 @@ io.on("connection", (socket) => {
       try {
         const res = eval(data);
         socket.emit("evalAnswer", res);
-      } catch (e) {
+      } catch (e: any) {
         socket.emit("evalAnswer", `Error: ${e.message}`);
       }
     }
   });
 
   socket.on("setName", (data) => {
-    if (PlayerAndBullet.list[id]) {
-      PlayerAndBullet.list[id].name = data;
-      console.log(`Player name set to: ${PlayerAndBullet.list[id].name}`);
+    if (Player.list[id]) {
+      Player.list[id].name = data;
+      console.log(`Player name set to: ${Player.list[id].name}`);
     }
   });
 });
@@ -91,7 +90,7 @@ io.on("connection", (socket) => {
 // ------------------------------ GAME LOOP ------------------------------
 setInterval(() => {
   const pack = {
-    player: PlayerAndBullet.update(),
+    player: Player.update(),
     bullet: Bullet.update(),
   };
 

@@ -4,8 +4,8 @@ import { GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT } from "./settings.js";
 
 // ------------------------------ PLAYER CLASS ------------------------------
 
-class PlayerAndBullet extends Entity {
-  constructor(id) {
+class Player extends Entity {
+  constructor(id: string) {
     super();
     this.id = id;
     this.name = `ISAAC ${Math.floor(Math.random() * 100)}`;
@@ -100,9 +100,9 @@ class PlayerAndBullet extends Entity {
   }
 
   static onConnect(socket, username) {
-    const player = new PlayerAndBullet(socket.id);
-    PlayerAndBullet.list[socket.id] = player;
-    PlayerAndBullet.list[socket.id].name = username;
+    const player = new Player(socket.id);
+    Player.list[socket.id] = player;
+    Player.list[socket.id].name = username;
     socket.on("keyPress", ({ inputId, state }) => {
       if (player[inputId] !== undefined) {
         player[inputId] = state;
@@ -111,30 +111,28 @@ class PlayerAndBullet extends Entity {
 
     socket.emit("init", {
       selfId: socket.id,
-      player: PlayerAndBullet.getAllInitPack(),
+      player: Player.getAllInitPack(),
       bullet: Bullet.getAllInitPack(),
     });
   }
 
   static onDisconnect(socket) {
-    delete PlayerAndBullet.list[socket.id];
+    delete Player.list[socket.id];
     removePack.player.push(socket.id);
   }
 
   static update() {
-    return Object.values(PlayerAndBullet.list).map((player) => {
+    return Object.values(Player.list).map((player) => {
       player.update();
       return player.getUpdatePack();
     });
   }
 
   static getAllInitPack() {
-    return Object.values(PlayerAndBullet.list).map((player) =>
-      player.getInitPack(),
-    );
+    return Object.values(Player.list).map((player) => player.getInitPack());
   }
 }
-PlayerAndBullet.list = {};
+Player.list = {};
 
 // ------------------------------ BULLET CLASS ------------------------------
 
@@ -164,10 +162,10 @@ class Bullet extends Entity {
     }
     super.update(7);
 
-    for (const player of Object.values(PlayerAndBullet.list)) {
+    for (const player of Object.values(Player.list)) {
       if (this.getDistance(player) < 64 && this.parent !== player.id) {
         player.hp -= 1;
-        const shooter = PlayerAndBullet.list[this.parent];
+        const shooter = Player.list[this.parent];
         if (player.hp <= 0) {
           if (shooter) shooter.score += 1;
           player.hp = player.hpMax;
@@ -215,4 +213,4 @@ class Bullet extends Entity {
 }
 Bullet.list = {};
 
-export { PlayerAndBullet, Bullet };
+export { Player, Bullet };
