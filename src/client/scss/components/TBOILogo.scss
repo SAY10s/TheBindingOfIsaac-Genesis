@@ -1,7 +1,11 @@
 @import "../constants/values.scss";
 .tboiLogo {
   position: relative;
+  perspective: 300px;
 
+  .tboiWrapper {
+    transform: rotateX(3deg);
+  }
   .theBindingOf {
     position: absolute;
     top: 1rem;
