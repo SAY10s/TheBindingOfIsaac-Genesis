@@ -3,7 +3,8 @@ Simple fan game based on `The Binding of Isaac (TBOI)`. Created as a brief remin
 
 ## Stack
 - HTML
-- JavaScript
+- TypeScript
+- SCSS
 - Node.js
 - PostgreSQL
   
