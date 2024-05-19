@@ -3,6 +3,7 @@ import { setupEventListeners } from "./EventHandlers.js";
 import { Player } from "./Player.js";
 import { Bullet } from "./Bullet.js";
 import { soundManager } from "./SoundManager.js";
+import { loadingManager } from "./LoadingManager.js";
 
 soundManager.addSound("newRun", "/client/sounds/newRun.mp3");
 soundManager.addSound("mainTheme", "/client/sounds/ost/mainTheme.mp3");

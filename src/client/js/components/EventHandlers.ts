@@ -1,5 +1,6 @@
 import GameClient from "./GameClient.js";
 import { soundManager } from "./SoundManager.js";
+import { loadingManager } from "./LoadingManager.js";
 
 export function setupEventListeners(gameClient: GameClient) {
   const playGameButton = document.querySelector(
@@ -8,8 +9,16 @@ export function setupEventListeners(gameClient: GameClient) {
   const dialogBox = document.querySelector("#dialogBox") as HTMLDivElement;
 
   playGameButton.addEventListener("click", () => {
-    dialogBox.style.display = "none";
     soundManager.playSound("mainTheme", true, 1000);
+    loadingManager.show(
+      () => {
+        dialogBox.style.display = "none";
+      },
+      true,
+      2000,
+      true,
+      4000,
+    );
   });
 
   const volumeUpButton = document.querySelector(
