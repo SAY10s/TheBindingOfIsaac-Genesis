@@ -6,14 +6,21 @@ class SoundManager {
   }
   static maxVolume = 1;
 
-  turnVolumeUp() {
-    if (SoundManager.maxVolume < 1) {
+  volumeUp() {
+    console.log(SoundManager.maxVolume);
+
+    if (SoundManager.maxVolume < 0.89) {
       SoundManager.maxVolume += 0.1;
+    } else {
+      SoundManager.maxVolume = 1;
     }
   }
-  turnVolumeDown() {
-    if (SoundManager.maxVolume > 0) {
+  volumeDown() {
+    console.log(SoundManager.maxVolume);
+    if (SoundManager.maxVolume > 0.11) {
       SoundManager.maxVolume -= 0.1;
+    } else {
+      SoundManager.maxVolume = 0;
     }
   }
 
@@ -24,7 +31,7 @@ class SoundManager {
         sound.volume = 0;
         sound.play();
         const fadeInInterval = setInterval(() => {
-          if (sound.volume < SoundManager.maxVolume) {
+          if (sound.volume <= SoundManager.maxVolume - 0.1) {
             sound.volume += SoundManager.maxVolume / 10;
           } else {
             clearInterval(fadeInInterval);

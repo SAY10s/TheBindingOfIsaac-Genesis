@@ -12,6 +12,21 @@ export function setupEventListeners(gameClient: GameClient) {
     soundManager.playSound("mainTheme", true, 1000);
   });
 
+  const volumeUpButton = document.querySelector(
+    "#volumeUp",
+  ) as HTMLButtonElement;
+  volumeUpButton.addEventListener("click", () => {
+    console.log("volume up");
+    soundManager.volumeUp();
+  });
+  const volumeDownButton = document.querySelector(
+    "#volumeDown",
+  ) as HTMLButtonElement;
+  volumeDownButton.addEventListener("click", () => {
+    console.log("volume down");
+    soundManager.volumeDown();
+  });
+
   const signInButton = document.querySelector(
     "#signInButton",
   ) as HTMLButtonElement;
