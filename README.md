@@ -1,5 +1,5 @@
 # The Binding of Isaac: Genesis
-Simple fan game based on `The Binding of Isaac (TBOI)`. Created as a brief reminder of how to work with `<canvas>`. You can play here: [The Binding of Isaac: Genesis]("https://isaac.nikodemmajzner.pl").
+Simple fan game based on `The Binding of Isaac (TBOI)`. Created as a brief reminder of how to work with `<canvas>`. You can play here: [The Binding of Isaac: Genesis](https://isaac.nikodemmajzner.pl).
 ## Stack
 - HTML
 - TypeScript
