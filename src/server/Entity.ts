@@ -5,8 +5,8 @@ class Entity {
   spdY: number;
   id: string;
   constructor() {
-    this.x = 250;
-    this.y = 250;
+    this.x = 640;
+    this.y = 340;
     this.spdX = 0;
     this.spdY = 0;
     this.id = "";
