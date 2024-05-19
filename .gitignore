@@ -1,4 +1,4 @@
 /node_modules
 /dist
-/src/client/style.css
-/src/client/style.css.map
+/src/client/scss/style.css
+/src/client/scss/style.css.map

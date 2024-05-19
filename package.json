@@ -5,11 +5,11 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "build-n-run": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc && node-sass src/client -o dist/client && node dist/app.js",
+    "build-n-run": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc && node-sass src/client/scss -o dist/client/css && node dist/app.js",
     "start": "node dist/app.js",
-    "copy": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist",
+    "copy": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png} dist",
     "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc",
-    "scss": "node-sass src/client -o dist/client"
+    "scss": "node-sass src/client/scss -o dist/client/css"
   },
   "dependencies": {
     "express": "^4.19.2",
