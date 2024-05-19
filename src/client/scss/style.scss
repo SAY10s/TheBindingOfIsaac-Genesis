@@ -1,10 +1,10 @@
-@use "constants/values";
-@use "constants/fonts";
+@import "./constants/values.scss";
+@import "./constants/fonts.scss";
 
-@use "components/TBOILogo";
-@use "components/DialogBox";
-@use "components/SignDiv";
-@use "components/GameDiv";
+@import "./components/TBOILogo.scss";
+@import "./components/DialogBox.scss";
+@import "./components/SignDiv.scss";
+@import "./components/GameDiv.scss";
 
 * {
   box-sizing: border-box;
