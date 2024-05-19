@@ -39,10 +39,10 @@ class GameClient {
 
   signIn() {
     const usernameInput = document.getElementById(
-      "signDiv-username",
+      "usernameInput",
     ) as HTMLInputElement;
     const passwordInput = document.getElementById(
-      "signDiv-password",
+      "passwordInput",
     ) as HTMLInputElement;
     const username = usernameInput?.value;
     const password = passwordInput?.value;
@@ -51,10 +51,10 @@ class GameClient {
 
   signUp() {
     const usernameInput = document.getElementById(
-      "signDiv-username",
+      "usernameInput",
     ) as HTMLInputElement;
     const passwordInput = document.getElementById(
-      "signDiv-password",
+      "passwordInput",
     ) as HTMLInputElement;
     const username = usernameInput?.value;
     const password = passwordInput?.value;
@@ -63,10 +63,10 @@ class GameClient {
 
   handleSignInResponse(data: { success: boolean }) {
     const usernameInput = document.getElementById(
-      "signDiv-username",
+      "usernameInput",
     ) as HTMLInputElement;
     const passwordInput = document.getElementById(
-      "signDiv-password",
+      "passwordInput",
     ) as HTMLInputElement;
     const signDiv = document.querySelector(".signDiv") as HTMLElement;
     const gameDiv = document.querySelector("#gameDiv") as HTMLElement;
@@ -87,14 +87,16 @@ class GameClient {
   }
 
   addToChat(data: string) {
-    const chatText = document.getElementById("chat-text") as HTMLDivElement;
+    const chatText = document.getElementById("chatMessages") as HTMLDivElement;
     chatText.innerHTML += `<div>${data}</div>`;
     chatText.scrollTop = chatText.scrollHeight;
   }
 
   handleChatSubmit(event: Event) {
     event.preventDefault();
-    const chatInput = document.getElementById("chat-input") as HTMLInputElement;
+    const chatInput = document.getElementById(
+      "chatTextInput",
+    ) as HTMLInputElement;
     if (chatInput.value[0] === "//") {
       this.socket.emit("evalServer", chatInput.value.slice(1));
     } else if (chatInput.value.slice(0, 8).toLowerCase() === "/setname") {

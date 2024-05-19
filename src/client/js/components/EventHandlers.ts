@@ -13,10 +13,10 @@ export function setupEventListeners(gameClient: GameClient) {
   });
 
   const signInButton = document.querySelector(
-    "#signDiv-signIn",
+    "#signInButton",
   ) as HTMLButtonElement;
   const signUpButton = document.querySelector(
-    "#signDiv-signUp",
+    "#signUpButton",
   ) as HTMLButtonElement;
   signInButton.addEventListener("click", () => gameClient.signIn());
   signUpButton.addEventListener("click", () => gameClient.signUp());
@@ -70,7 +70,7 @@ export function setupEventListeners(gameClient: GameClient) {
       gameClient.handleRemove(data),
   );
 
-  const chatForm = document.getElementById("chat-form") as HTMLFormElement;
+  const chatForm = document.getElementById("chatForm") as HTMLFormElement;
   chatForm.addEventListener("submit", (event) =>
     gameClient.handleChatSubmit(event),
   );
