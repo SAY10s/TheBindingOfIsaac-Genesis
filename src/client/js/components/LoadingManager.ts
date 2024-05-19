@@ -8,9 +8,15 @@ class LoadingManager {
     fadeOutDuration = 0,
     loadingDuration = 0,
   ) {
+    this.overlay.style.opacity = "1";
+
+    this.overlay.style.background =
+      "radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 0%, black 100%)";
+
     if (fadeIn) {
       this.overlay.style.transition = `${fadeInDuration}ms`;
     }
+    this.overlay.style.background = "black";
     this.overlay.style.opacity = "1";
 
     setTimeout(() => {

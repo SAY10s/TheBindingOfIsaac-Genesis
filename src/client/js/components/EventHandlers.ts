@@ -17,7 +17,8 @@ export function setupEventListeners(gameClient: GameClient) {
       true,
       2000,
       true,
-      4000,
+      2000,
+      200,
     );
   });
 
