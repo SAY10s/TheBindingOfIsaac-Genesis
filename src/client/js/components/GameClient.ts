@@ -7,8 +7,7 @@ import { loadingManager } from "./LoadingManager.js";
 
 soundManager.addSound("newRun", "/client/sounds/newRun.mp3");
 soundManager.addSound("mainTheme", "/client/sounds/ost/mainTheme.mp3");
-
-// soundManager.playSound("mainTheme");
+soundManager.addSound("firstFloor", "/client/sounds/ost/firstFloorOst.mp3");
 
 class GameClient {
   socket: any;
@@ -76,12 +75,15 @@ class GameClient {
         () => {
           signDiv.style.display = "none";
           gameDiv.style.display = "flex";
+          setTimeout(() => {
+            soundManager.playSound("firstFloor", true, 500);
+          }, 4000);
         },
         true,
-        1000,
+        500,
         true,
         2000,
-        3000,
+        3500,
       );
 
       soundManager.stopSound("mainTheme", true, 300);
