@@ -19,6 +19,30 @@ body {
   background-color: black;
 }
 
+.tboiLogo {
+  position: relative;
+
+  .theBindingOf {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    font-size: 3rem;
+    letter-spacing: 0.2rem;
+  }
+
+  .isaac {
+    font-size: 15rem;
+  }
+
+  .genesis {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 3rem;
+    letter-spacing: 0.2rem;
+  }
+}
+
 #dialogBox {
   position: fixed;
   display: flex;
@@ -31,6 +55,7 @@ body {
   height: 100%;
   background-color: #1b0303;
   color: white;
+  z-index: 999;
   button {
     background-color: saddlebrown;
     color: white;
@@ -39,19 +64,37 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
   }
-  h2 {
-    font-size: 4rem;
-    margin: 3rem;
+}
+.signDiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  color: white;
+  h1 {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+  }
+  input {
+    width: 300px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    font-size: 1.5rem;
+    background-color: saddlebrown;
+  }
+  button {
+    width: 300px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background-color: saddlebrown;
   }
 }
-
-#usernameInput,
-#passwordInput,
-#signInButton,
-#signUpButton {
-  background-color: saddlebrown;
-}
-
 #gameDiv {
   display: none;
   .canvasWrapper {
