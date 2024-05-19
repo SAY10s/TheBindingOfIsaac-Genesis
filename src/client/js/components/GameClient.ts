@@ -9,6 +9,9 @@ soundManager.addSound("newRun", "/client/sounds/newRun.mp3");
 soundManager.addSound("mainTheme", "/client/sounds/ost/mainTheme.mp3");
 soundManager.addSound("firstFloor", "/client/sounds/ost/firstFloorOst.mp3");
 
+soundManager.addSound("tearFall1", "/client/sounds/player/tears/tearFall1.mp3");
+soundManager.addSound("tearFall2", "/client/sounds/player/tears/tearFall2.mp3");
+
 class GameClient {
   socket: any;
   selfId: string | null;
@@ -172,6 +175,7 @@ class GameClient {
       delete Player.list[id];
     }
     for (let id of data.bullet) {
+      soundManager.playSound(`tearFall${Math.floor(Math.random() * 2) + 1}`);
       delete Bullet.list[id];
     }
   }

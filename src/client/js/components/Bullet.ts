@@ -1,6 +1,17 @@
 import GameClient from "./GameClient.js";
+import { soundManager } from "./SoundManager.js";
+soundManager.addSound(
+  "tearShoot1",
+  "/client/sounds/player/tears/tearShoot1.mp3",
+);
+soundManager.addSound(
+  "tearShoot2",
+  "/client/sounds/player/tears/tearShoot2.mp3",
+);
 
 export class Bullet {
+  //FIXME: change type to SoundManager (even tho it is not really needed)
+  soundManager: any;
   id: string;
   x: number;
   y: number;
@@ -11,12 +22,16 @@ export class Bullet {
     initPack: { id: string; parent: string; x: number; y: number },
     game: GameClient,
   ) {
+    this.soundManager = soundManager;
     this.id = initPack.id;
     this.x = initPack.x;
     this.y = initPack.y;
     this.parent = initPack.parent;
     this.game = game;
     Bullet.list[this.id] = this;
+    this.soundManager.playSound(
+      `tearShoot${Math.floor(Math.random() * 2) + 1}`,
+    );
   }
 
   update(data: { x?: number; y?: number }) {
