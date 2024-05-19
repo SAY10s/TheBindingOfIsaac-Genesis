@@ -72,7 +72,7 @@ class GameClient {
     const gameDiv = document.querySelector("#gameDiv") as HTMLElement;
     if (data.success) {
       signDiv.style.display = "none";
-      gameDiv.style.display = "inline-block";
+      gameDiv.style.display = "flex";
 
       soundManager.stopSound("mainTheme", true, 300);
       soundManager.playSound("newRun");

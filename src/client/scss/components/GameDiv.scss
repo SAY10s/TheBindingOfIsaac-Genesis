@@ -1,5 +1,8 @@
 #gameDiv {
   display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   .canvasWrapper {
     position: relative;
     height: 740px;
