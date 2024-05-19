@@ -1,4 +1,12 @@
 import GameClient from "./GameClient.js";
+import { soundManager } from "./SoundManager.js";
+soundManager.addSound("ouch1", "/client/sounds/player/hurt/isaacHurt1.mp3");
+soundManager.addSound("ouch2", "/client/sounds/player/hurt/isaacHurt2.mp3");
+soundManager.addSound("ouch3", "/client/sounds/player/hurt/isaacHurt3.mp3");
+
+soundManager.addSound("death1", "/client/sounds/player/death/isaacDeath1.mp3");
+soundManager.addSound("death2", "/client/sounds/player/death/isaacDeath2.mp3");
+soundManager.addSound("death3", "/client/sounds/player/death/isaacDeath3.mp3");
 
 export class Player {
   id: string;
@@ -52,7 +60,14 @@ export class Player {
   }) {
     if (data.x !== undefined) this.x = data.x;
     if (data.y !== undefined) this.y = data.y;
-    if (data.hp !== undefined) this.hp = data.hp;
+    if (data.hp !== undefined) {
+      if (data.hp < this.hp) {
+        soundManager.playSound(`ouch${Math.floor(Math.random() * 3) + 1}`);
+      } else if (data.hp > this.hp) {
+        soundManager.playSound(`death${Math.floor(Math.random() * 3) + 1}`);
+      }
+      this.hp = data.hp;
+    }
     if (data.name !== undefined) this.name = data.name.slice(0, 20);
     if (data.score !== undefined) {
       const playerScoreDiv = document.getElementById(this.id);

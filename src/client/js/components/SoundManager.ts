@@ -39,7 +39,6 @@ class SoundManager {
         sound.play();
         const fadeInInterval = setInterval(() => {
           if (sound.volume <= SoundManager.maxVolume - 0.1) {
-            console.log(sound.volume, SoundManager.maxVolume);
             sound.volume += SoundManager.maxVolume / 10;
           } else {
             clearInterval(fadeInInterval);
