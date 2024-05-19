@@ -16,14 +16,12 @@ export function setupEventListeners(gameClient: GameClient) {
     "#volumeUp",
   ) as HTMLButtonElement;
   volumeUpButton.addEventListener("click", () => {
-    console.log("volume up");
     soundManager.volumeUp();
   });
   const volumeDownButton = document.querySelector(
     "#volumeDown",
   ) as HTMLButtonElement;
   volumeDownButton.addEventListener("click", () => {
-    console.log("volume down");
     soundManager.volumeDown();
   });
 
