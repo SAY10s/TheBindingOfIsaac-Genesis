@@ -74,7 +74,7 @@ class GameClient {
       signDiv.style.display = "none";
       gameDiv.style.display = "inline-block";
 
-      soundManager.stopSound("mainTheme");
+      soundManager.stopSound("mainTheme", true, 300);
       soundManager.playSound("newRun");
     } else {
       usernameInput.value = "";

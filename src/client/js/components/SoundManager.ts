@@ -2,14 +2,25 @@ class SoundManager {
   private sounds: Record<string, HTMLAudioElement> = {};
 
   addSound(name: string, src: string) {
-    const sound = new Audio(src);
-    this.sounds[name] = sound;
+    this.sounds[name] = new Audio(src);
   }
 
-  playSound(name: string) {
+  playSound(name: string, fadeIn: boolean = false, fadeInTime: number = 1000) {
     const sound = this.sounds[name];
     if (sound) {
-      sound.play();
+      if (fadeIn) {
+        sound.volume = 0;
+        sound.play();
+        const fadeInInterval = setInterval(() => {
+          if (sound.volume < 1) {
+            sound.volume += 0.1;
+          } else {
+            clearInterval(fadeInInterval);
+          }
+        }, fadeInTime / 10);
+      } else {
+        sound.play();
+      }
     } else {
       console.error(`Sound ${name} not found`);
     }
@@ -24,13 +35,27 @@ class SoundManager {
     }
   }
 
-  stopSound(name: string) {
+  stopSound(
+    name: string,
+    fadeOut: boolean = false,
+    fadeOutTime: number = 1000,
+  ) {
     const sound = this.sounds[name];
     if (sound) {
-      sound.pause();
-      sound.currentTime = 0;
-    } else {
-      console.error(`Sound ${name} not found`);
+      if (fadeOut) {
+        const fadeOutInterval = setInterval(() => {
+          if (sound.volume > 0.1) {
+            sound.volume -= 0.1;
+          } else {
+            sound.volume = 0;
+            sound.pause();
+            clearInterval(fadeOutInterval);
+          }
+        }, fadeOutTime / 10);
+      } else {
+        sound.pause();
+        sound.currentTime = 0;
+      }
     }
   }
 }

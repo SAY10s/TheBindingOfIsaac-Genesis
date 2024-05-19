@@ -9,7 +9,7 @@ export function setupEventListeners(gameClient: GameClient) {
 
   playGameButton.addEventListener("click", () => {
     dialogBox.style.display = "none";
-    soundManager.playSound("mainTheme");
+    soundManager.playSound("mainTheme", true, 1000);
   });
 
   const signInButton = document.querySelector(
