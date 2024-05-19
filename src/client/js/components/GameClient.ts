@@ -72,8 +72,17 @@ class GameClient {
     const signDiv = document.querySelector(".signDiv") as HTMLElement;
     const gameDiv = document.querySelector("#gameDiv") as HTMLElement;
     if (data.success) {
-      signDiv.style.display = "none";
-      gameDiv.style.display = "flex";
+      loadingManager.show(
+        () => {
+          signDiv.style.display = "none";
+          gameDiv.style.display = "flex";
+        },
+        true,
+        1000,
+        true,
+        2000,
+        3000,
+      );
 
       soundManager.stopSound("mainTheme", true, 300);
       soundManager.playSound("newRun");
