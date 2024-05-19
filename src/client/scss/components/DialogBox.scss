@@ -1,3 +1,4 @@
+@import "../constants/values.scss";
 #dialogBox {
   position: fixed;
   display: flex;
@@ -8,15 +9,28 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #1b0303;
-  color: white;
+  background: $backgroundGradient;
+  color: $primaryTextColor;
   z-index: 999;
-  button {
-    background-color: saddlebrown;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
+  button,
+  input {
+    background-color: $backgroundPrimaryDark;
+    width: 500px;
+    padding: 1rem 3rem;
+    border: 3px solid $primaryTextColor;
     font-size: 1.5rem;
+    border-radius: 0.5rem;
     cursor: pointer;
+    margin: 0.5rem;
+  }
+  input {
+    padding: 1rem 1rem;
+  }
+  label {
+    font-size: 1.5rem;
+    margin: 0.5rem;
+  }
+  .tboiLogo {
+    margin: 7rem;
   }
 }

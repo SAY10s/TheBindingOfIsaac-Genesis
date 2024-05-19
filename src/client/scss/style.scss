@@ -1,4 +1,4 @@
-@import "./constants/values.scss";
+@use "./constants/values.scss" as *;
 @import "./constants/fonts.scss";
 
 @import "./components/TBOILogo.scss";
@@ -19,5 +19,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 1rem;
-  background-color: black;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: $backgroundGradient;
 }

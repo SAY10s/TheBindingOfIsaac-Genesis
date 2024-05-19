@@ -1,33 +1,43 @@
+@import "../constants/values.scss";
 .signDiv {
+  button,
+  input {
+    background-color: $backgroundPrimaryDark;
+    width: 500px;
+    padding: 1rem 3rem;
+    border: 3px solid $primaryTextColor;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin: 0.5rem;
+  }
+  input {
+    padding: 1rem 1rem;
+  }
+  label {
+    font-size: 1.5rem;
+    margin: 0.5rem;
+  }
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  //justify-content: center;
   width: 100%;
-  height: 100%;
-  background-color: black;
+  min-height: 100%;
   color: white;
   .tboiLogo {
-    margin: 7rem;
+    margin: 7rem 7rem 4rem;
   }
   h1 {
     font-size: 5rem;
     margin-bottom: 2rem;
   }
-  input {
-    width: 300px;
-    padding: 0.5rem;
-    margin: 0.5rem;
-    font-size: 1.5rem;
-    background-color: saddlebrown;
-  }
-  button {
-    width: 300px;
-    padding: 0.5rem;
-    margin: 0.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    background-color: saddlebrown;
+  .btnWrapper {
+    margin-top: 2rem;
+    width: calc(500px + 1rem);
+    display: flex;
+    button {
+      width: 50%;
+    }
   }
 }
