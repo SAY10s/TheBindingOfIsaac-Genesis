@@ -1,0 +1,22 @@
+@use "../constants/values" as *;
+.tboiLogo {
+  position: relative;
+
+  .theBindingOf {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    font-size: 3rem;
+    letter-spacing: $logoLetterSpacing;
+  }
+  .isaac {
+    font-size: 15rem;
+  }
+  .genesis {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 3rem;
+    letter-spacing: $logoLetterSpacing;
+  }
+}
