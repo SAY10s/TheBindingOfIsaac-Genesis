@@ -1,8 +1,8 @@
 class SoundManager {
-  private sounds: Record<string, HTMLAudioElement> = {};
+  private sounds: Record<string, string> = {};
 
   addSound(name: string, src: string) {
-    this.sounds[name] = new Audio(src);
+    this.sounds[name] = src;
   }
   static maxVolume = 0.25;
 
@@ -12,9 +12,10 @@ class SoundManager {
     } else {
       SoundManager.maxVolume = 1;
     }
-    for (const sound in this.sounds) {
-      if (this.sounds.hasOwnProperty(sound)) {
-        this.sounds[sound].volume = SoundManager.maxVolume;
+    for (const name in this.sounds) {
+      if (this.sounds.hasOwnProperty(name)) {
+        const sound = new Audio(this.sounds[name]);
+        sound.volume = SoundManager.maxVolume;
       }
     }
   }
@@ -24,16 +25,19 @@ class SoundManager {
     } else {
       SoundManager.maxVolume = 0;
     }
-    for (const sound in this.sounds) {
-      if (this.sounds.hasOwnProperty(sound)) {
-        this.sounds[sound].volume = SoundManager.maxVolume;
+    for (const name in this.sounds) {
+      if (this.sounds.hasOwnProperty(name)) {
+        const sound = new Audio(this.sounds[name]);
+        sound.volume = SoundManager.maxVolume;
       }
     }
   }
 
   playSound(name: string, fadeIn: boolean = false, fadeInTime: number = 1000) {
-    const sound = this.sounds[name];
-    if (sound) {
+    const src = this.sounds[name];
+    if (src) {
+      const sound = new Audio(src);
+      sound.volume = SoundManager.maxVolume;
       if (fadeIn) {
         sound.volume = 0;
         sound.play();
@@ -52,22 +56,14 @@ class SoundManager {
     }
   }
 
-  pauseSound(name: string) {
-    const sound = this.sounds[name];
-    if (sound) {
-      sound.pause();
-    } else {
-      console.error(`Sound ${name} not found`);
-    }
-  }
-
   stopSound(
-    name: string,
-    fadeOut: boolean = false,
-    fadeOutTime: number = 1000,
+      name: string,
+      fadeOut: boolean = false,
+      fadeOutTime: number = 1000,
   ) {
-    const sound = this.sounds[name];
-    if (sound) {
+    const src = this.sounds[name];
+    if (src) {
+      const sound = new Audio(src);
       if (fadeOut) {
         const fadeOutInterval = setInterval(() => {
           if (sound.volume > SoundManager.maxVolume / 10) {
@@ -82,6 +78,8 @@ class SoundManager {
         sound.pause();
         sound.currentTime = 0;
       }
+    } else {
+      console.error(`Sound ${name} not found`);
     }
   }
 }
