@@ -1,5 +1,6 @@
 class SoundManager {
   private sounds: Record<string, string> = {};
+  private playingSounds: Record<string, HTMLAudioElement> = {};
 
   addSound(name: string, src: string) {
     this.sounds[name] = src;
@@ -12,9 +13,9 @@ class SoundManager {
     } else {
       SoundManager.maxVolume = 1;
     }
-    for (const name in this.sounds) {
-      if (this.sounds.hasOwnProperty(name)) {
-        const sound = new Audio(this.sounds[name]);
+    for (const name in this.playingSounds) {
+      const sound = this.playingSounds[name];
+      if (sound) {
         sound.volume = SoundManager.maxVolume;
       }
     }
@@ -25,9 +26,9 @@ class SoundManager {
     } else {
       SoundManager.maxVolume = 0;
     }
-    for (const name in this.sounds) {
-      if (this.sounds.hasOwnProperty(name)) {
-        const sound = new Audio(this.sounds[name]);
+    for (const name in this.playingSounds) {
+      const sound = this.playingSounds[name];
+      if (sound) {
         sound.volume = SoundManager.maxVolume;
       }
     }
@@ -38,6 +39,7 @@ class SoundManager {
     if (src) {
       const sound = new Audio(src);
       sound.volume = SoundManager.maxVolume;
+      this.playingSounds[name] = sound;
       if (fadeIn) {
         sound.volume = 0;
         sound.play();
@@ -57,13 +59,12 @@ class SoundManager {
   }
 
   stopSound(
-      name: string,
-      fadeOut: boolean = false,
-      fadeOutTime: number = 1000,
+    name: string,
+    fadeOut: boolean = false,
+    fadeOutTime: number = 1000,
   ) {
-    const src = this.sounds[name];
-    if (src) {
-      const sound = new Audio(src);
+    const sound = this.playingSounds[name];
+    if (sound) {
       if (fadeOut) {
         const fadeOutInterval = setInterval(() => {
           if (sound.volume > SoundManager.maxVolume / 10) {
