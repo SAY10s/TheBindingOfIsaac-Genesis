@@ -9,7 +9,9 @@
     "start": "node dist/app.js",
     "copy": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png,svg} dist",
     "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc",
-    "scss": "sass --watch src/client/scss:dist/client/css"
+    "scss": "sass --watch src/client/scss:dist/client/css",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -21,6 +23,7 @@
     "@types/express": "^4.17.21",
     "@types/pg": "^8.11.6",
     "copyfiles": "^2.4.1",
+    "cypress": "^13.9.0",
     "sass": "^1.43.4",
     "typescript": "^5.4.5"
   }
