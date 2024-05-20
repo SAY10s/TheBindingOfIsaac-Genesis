@@ -5,11 +5,11 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "build-n-run": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png,svg} dist && tsc && node-sass src/client/scss -o dist/client/css && node dist/app.js",
+    "build-n-run": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png,svg} dist && tsc && sass src/client/scss:dist/client/css && node dist/app.js",
     "start": "node dist/app.js",
     "copy": "copyfiles -u 1 -e **/scss/* src/**/*.{html,css,ttf,txt,mp3,png,svg} dist",
     "build": "copyfiles -u 1 src/**/*.{html,css,ttf,txt,mp3,png} dist && tsc",
-    "scss": "node-sass --watch src/client/scss -o dist/client/css"
+    "scss": "sass --watch src/client/scss:dist/client/css"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -21,7 +21,7 @@
     "@types/express": "^4.17.21",
     "@types/pg": "^8.11.6",
     "copyfiles": "^2.4.1",
-    "node-sass": "^9.0.0",
+    "sass": "^1.43.4",
     "typescript": "^5.4.5"
   }
 }
