@@ -182,18 +182,40 @@ class GameClient {
 
   updateGame() {
     if (!this.selfId) return;
-    this.ctx.clearRect(0, 0, 500, 500);
+    const player = Player.list[this.selfId];
+    if (!player) return;
+
+    // Calculate the offset based on the player's position
+    let offsetX = 1280 / 2 - player.x; // Half of canvas width
+    let offsetY = 720 / 2 - player.y; // Half of canvas height
+
+    // Check if the offset exceeds the map boundaries
+    offsetX = Math.min(Math.max(offsetX, -1280), 0);
+    offsetY = Math.min(Math.max(offsetY, -720), 0);
+
+    // Clear the canvas
+    this.ctx.clearRect(0, 0, 1280, 720);
+
+    // Draw the map with the offset
+    this.ctx.save();
+    this.ctx.translate(offsetX, offsetY);
     this.drawMap();
+
+    // Draw each player with the offset
     for (let id in Player.list) {
       Player.list[id].draw();
     }
+
+    // Draw each bullet with the offset
     for (let id in Bullet.list) {
       Bullet.list[id].draw();
     }
+
+    this.ctx.restore();
   }
 
   drawMap() {
-    this.ctx.drawImage(this.Img.map, 0, 0, 1280, 720);
+    this.ctx.drawImage(this.Img.map, 0, 0, 1280 * 2, 720 * 2);
   }
 
   handleKeyEvent(event: KeyboardEvent, type: string) {

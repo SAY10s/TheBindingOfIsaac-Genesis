@@ -8,7 +8,7 @@ export class ImageLoader {
       enemyShooting: "/client/img/playerModels/enemyShooting.png",
       playerTear: "/client/img/playerTear.png",
       enemyTear: "/client/img/enemyTear.png",
-      map: "/client/img/bg.png",
+      map: "/client/img/4x4.png",
       soulFullHeart: "/client/img/hearts/soulFullHeart.png",
       soulHalfHeart: "/client/img/hearts/soulHalfHeart.png",
       redFullHeart: "/client/img/hearts/redFullHeart.png",
