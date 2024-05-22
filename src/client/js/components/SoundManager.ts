@@ -5,7 +5,7 @@ class SoundManager {
   addSound(name: string, src: string) {
     this.sounds[name] = src;
   }
-  static maxVolume = 0.25;
+  static maxVolume = 0.1;
 
   volumeUp() {
     if (SoundManager.maxVolume < 0.94) {

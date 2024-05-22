@@ -186,15 +186,15 @@ class GameClient {
     if (!player) return;
 
     // Calculate the offset based on the player's position
-    let offsetX = 1280 / 2 - player.x; // Half of canvas width
-    let offsetY = 720 / 2 - player.y; // Half of canvas height
+    let offsetX = 1600 / 2 - player.x; // Half of canvas width
+    let offsetY = 900 / 2 - player.y; // Half of canvas height
 
     // Check if the offset exceeds the map boundaries
-    offsetX = Math.min(Math.max(offsetX, -1280), 0);
-    offsetY = Math.min(Math.max(offsetY, -720), 0);
+    offsetX = Math.min(Math.max(offsetX, -1600), 0);
+    offsetY = Math.min(Math.max(offsetY, -900), 0);
 
     // Clear the canvas
-    this.ctx.clearRect(0, 0, 1280, 720);
+    this.ctx.clearRect(0, 0, 1600, 900);
 
     // Draw the map with the offset
     this.ctx.save();
@@ -215,7 +215,7 @@ class GameClient {
   }
 
   drawMap() {
-    this.ctx.drawImage(this.Img.map, 0, 0, 1280 * 2, 720 * 2);
+    this.ctx.drawImage(this.Img.map, 0, 0, 1600 * 2, 900 * 2);
   }
 
   handleKeyEvent(event: KeyboardEvent, type: string) {

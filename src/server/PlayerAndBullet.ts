@@ -89,15 +89,15 @@ class Player extends Entity {
 
   updateSpeed() {
     this.spdX =
-      this.pressingRight && this.x < GAME_WINDOW_WIDTH - 150
+      this.pressingRight && this.x < GAME_WINDOW_WIDTH - 180
         ? this.maxSpd
-        : this.pressingLeft && this.x > 150
+        : this.pressingLeft && this.x > 180
           ? -this.maxSpd
           : 0;
     this.spdY =
-      this.pressingUp && this.y > 100
+      this.pressingUp && this.y > 140
         ? -this.maxSpd
-        : this.pressingDown && this.y < GAME_WINDOW_HEIGHT - 170
+        : this.pressingDown && this.y < GAME_WINDOW_HEIGHT - 200
           ? this.maxSpd
           : 0;
   }
